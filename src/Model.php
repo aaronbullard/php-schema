@@ -5,9 +5,12 @@ namespace PhpSchema;
 use ReflectionClass;
 use JsonSchema\Validator;
 use PhpSchema\Contracts\Arrayable;
+use PhpSchema\Traits\PublicProperties;
 
 abstract class Model implements Arrayable
 {
+    protected static $schema;
+    
     protected $_attributes;
 
     protected $_validator;
@@ -31,6 +34,11 @@ abstract class Model implements Arrayable
         }, $refl->getConstructor()->getParameters());
     }
 
+    public function getSchema()
+    {
+        return static::$schema;
+    }
+
     protected function set($key, $value)
     {
         if(is_array($value)){
@@ -47,23 +55,11 @@ abstract class Model implements Arrayable
         }
     }
 
-    public function __set($key, $value)
-    {
-        $this->set($key, $value);
-
-        $this->validate();
-    }
-
-    public function __get($key)
-    {
-        return $this->_attributes[$key];
-    }
-
     public function validate()
     {
         $object = $this->toObject();
 
-        $this->_validator->validate($object, $this->schema);
+        $this->_validator->validate($object, $this->getSchema());
 
         if(!$this->_validator->isValid()){
             $errors = $this->_validator->getErrors();

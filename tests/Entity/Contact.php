@@ -4,9 +4,9 @@ namespace PhpSchema\Tests\Entity;
 
 use PhpSchema\Model;
 
-class Contact extends Model
+class Contact extends PublicPropertiesModel
 {
-    protected $schema = [
+    protected static $schema = [
         '$ref' => 'file://' . __DIR__ . '/../Schemas/contact.json'
     ];
 

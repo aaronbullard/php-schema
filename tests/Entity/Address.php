@@ -4,9 +4,9 @@ namespace PhpSchema\Tests\Entity;
 
 use PhpSchema\Model;
 
-class Address extends Model
+class Address extends PublicPropertiesModel
 {
-    protected $schema = [
+    protected static $schema = [
         '$ref' => 'file://' . __DIR__ . '/../Schemas/address.json'
     ];
 

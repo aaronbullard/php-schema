@@ -11,15 +11,6 @@ use PhpSchema\ValidationException;
 
 class ModelTest extends TestCase
 {
-    protected function dumpErrors(callable $fn)
-    {
-        try{
-            $fn();
-        } catch (ValidationException $e) {
-            print_r($e->getErrors());die;
-        }
-    }
-
     /** @test */
     public function it_sets_init_properties()
     {
