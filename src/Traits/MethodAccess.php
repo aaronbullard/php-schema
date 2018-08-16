@@ -2,33 +2,42 @@
 
 namespace PhpSchema\Traits;
 
+use ArgumentCountError;
 use BadMethodCallException;
 
 trait MethodAccess
 {
     public function __call($method, $args)
     {
-        if($this->isGetter($method) && empty($args)){
+        if($this->isGetterMethod($method) && empty($args)){
             $key = $this->getMethodToAttributeTransformer($method);
             return $this->_attributes[$key];
         } 
         
-        if($this->isSetter($method) && count($args)) {
+        if($this->isSetterMethod($method)) {
+            // No arguments passed to setter
+            if(count($args) === 0){
+                throw new ArgumentCountError("Too few arguments to function ".
+                    __CLASS__."::$method(), ".count($args).
+                    " passed in and exactly 1 expected");
+            }
+
             $key = $this->setMethodToAttributeTransformer($method);
             $this->set($key, $args[0]);
             $this->validate();
+
             return $this;
         }
 
-        throw new BadMethodCallException("Unrecognized method '". get_class($this) . "::$method'.");
+        throw new BadMethodCallException("Unrecognized method ". __CLASS__ . "::$method()");
     }
 
-    protected function isGetter(string $method): bool
+    protected function isGetterMethod(string $method): bool
     {
         return true;
     }
 
-    protected function isSetter(string $method): bool
+    protected function isSetterMethod(string $method): bool
     {
         return true;
     }

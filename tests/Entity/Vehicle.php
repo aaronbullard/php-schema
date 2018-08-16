@@ -18,12 +18,12 @@ class Vehicle extends Model
         parent::__construct($car_id, $make, $licensePlate);
     }
 
-    protected function isGetter(string $method): bool
+    protected function isGetterMethod(string $method): bool
     {
         return substr($method, 0, 3) === 'get';
     }
 
-    protected function isSetter(string $method): bool
+    protected function isSetterMethod(string $method): bool
     {
         return substr($method, 0, 3) === 'set';
     }

@@ -74,6 +74,17 @@ class MethodAccessTest extends TestCase
 
         $this->expectException(\BadMethodCallException::class);
 
-        $car->year();
+        $year = $car->year();
+    }
+
+    /** @test */
+    public function it_throws_exception_when_no_arguments_are_passed_to_a_setter()
+    {
+        $car = new Vehicle(42, "Jeep", "ABC123");
+
+        $this->expectException(\ArgumentCountError::class);
+        $this->expectExceptionMessage("Too few arguments to function PhpSchema\Tests\Entity\Vehicle::setMake(), 0 passed in and exactly 1 expected");
+
+        $car->setMake();
     }
 }
