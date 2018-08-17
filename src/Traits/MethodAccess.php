@@ -23,7 +23,7 @@ trait MethodAccess
             }
 
             $key = $this->setMethodToAttributeTransformer($method);
-            $this->set($key, $args[0]);
+            $this->setAttribute($key, $args[0]);
             $this->validate();
 
             return $this;

@@ -6,7 +6,7 @@ trait PublicProperties
 {
     public function __set($key, $value)
     {
-        $this->set($key, $value);
+        $this->setAttribute($key, $value);
 
         $this->validate();
     }

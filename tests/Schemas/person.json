@@ -7,5 +7,6 @@
         "address": {"$ref": "address.json"},
         "phoneNumber": {"type": "object"}
     },
-    "required": ["firstName", "lastName"]
+    "required": ["firstName", "lastName"],
+    "additionalProperties": false
 }

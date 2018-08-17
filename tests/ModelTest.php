@@ -115,22 +115,21 @@ class ModelTest extends TestCase
     }
 
     /** @test */
-    public function it_ignores_unknown_classes()
+    public function it_enforces_arrayable_interface()
     {
         $person = new Person("Aaron", "Bullard");
-        
         $random = new UnknownClass();
 
-        $person->random = $random;
-
-        // converts unknown class to null
-        $this->assertEquals($person->toArray()['random'], null);
-
-        // enforces schema
+         // enforces schema
         $this->expectException(
             ValidationException::class
         );
-        $person->phoneNumber = $random;
+
+        $this->expectExceptionMessage(
+            "Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface"
+        );
+
+        $person->random = $random;
     }
 
     /** @test */
@@ -164,6 +163,9 @@ class ModelTest extends TestCase
         $contact->phoneNumbers[] = new PhoneNumber("2");
 
         $this->assertCount(2, $contact->phoneNumbers);
-    }
 
+        foreach($contact->phoneNumbers as $number){
+            $this->assertInstanceOf(PhoneNumber::class, $number);
+        }
+    }
 }

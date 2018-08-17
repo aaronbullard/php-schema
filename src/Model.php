@@ -3,17 +3,16 @@
 namespace PhpSchema;
 
 use ReflectionClass;
-use JsonSchema\Validator;
 use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Traits\PublicProperties;
 
 abstract class Model implements Arrayable
 {
     protected static $schema;
-    
-    protected $_attributes;
 
     protected $_validator;
+    
+    protected $_attributes;
 
     public function __construct(...$args)
     {
@@ -39,7 +38,7 @@ abstract class Model implements Arrayable
         return static::$schema;
     }
 
-    protected function set($key, $value)
+    protected function setAttribute($key, $value)
     {
         if(is_array($value)){
             $value = new ArrayObserver($value, $this);
@@ -51,7 +50,7 @@ abstract class Model implements Arrayable
     public function hydrate(array $data)
     {
         foreach($data as $key => $value){
-            $this->set($key, $value);
+            $this->setAttribute($key, $value);
         }
     }
 
@@ -94,9 +93,9 @@ abstract class Model implements Arrayable
             return json_decode(json_encode($value), true);
         }
 
-        // Some unknown object, make null
+        // Some unknown object
         if(is_object($value)){
-            return null;
+            throw new ValidationException("Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface");
         }
 
         return $value;
