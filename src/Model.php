@@ -4,6 +4,7 @@ namespace PhpSchema;
 
 use ReflectionClass;
 use PhpSchema\Traits\Observing;
+use PhpSchema\Traits\ConvertsType;
 use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\Traits\PublicProperties;
@@ -13,7 +14,7 @@ use PhpSchema\Observers\ObserverFactory;
 
 abstract class Model implements Arrayable, Observable
 {
-    use Observing;
+    use Observing, ConvertsType;
 
     protected static $schema;
 
@@ -32,18 +33,13 @@ abstract class Model implements Arrayable, Observable
         $this->_validator = new Validator;
         $this->_attributes = [];
 
-        $params = $this->getConstructorParameters();
+        // Get parameters from constructor
+        $params = array_map(function($param){
+            return $param->name;
+        }, (new ReflectionClass($this))->getConstructor()->getParameters());
+
         $this->hydrate(array_combine($params, $args));
         $this->validate();
-    }
-
-    protected function getConstructorParameters()
-    {
-        $refl = new ReflectionClass($this);
-
-        return array_map(function($param){
-            return $param->name;
-        }, $refl->getConstructor()->getParameters());
     }
 
     public function getSchema()
@@ -58,20 +54,27 @@ abstract class Model implements Arrayable, Observable
         }
 
         $this->_attributes[$key] = $value;
+
+        $this->validate();
+        $this->notify();
     }
 
     protected function getAttribute($key)
     {
-        $value = $this->_attributes[$key];
-
-        return $value;
+        return $this->_attributes[$key];
     }
 
     public function hydrate(array $data)
     {
         foreach($data as $key => $value){
-            $this->setAttribute($key, $value);
+            if(ObserverFactory::isObservable($value)){
+                $value = ObserverFactory::create($value, $this);
+            }
+    
+            $this->_attributes[$key] = $value;
         }
+
+        $this->notify();
     }
 
     public function validate(): void
@@ -93,13 +96,6 @@ abstract class Model implements Arrayable, Observable
         \array_walk($this->subscribers, function($sub) use ($payload){
             $sub->notify($payload);
         });
-    }
-
-    public function toArray(): array
-    {
-        return array_map(function($value){
-            return $this->clean($value);
-        }, $this->_attributes);
     }
 
     protected function clean($value)
@@ -130,19 +126,10 @@ abstract class Model implements Arrayable, Observable
         return $value;
     }
 
-    public function toJson(): string
+    public function toArray(): array
     {
-        return json_encode($this->toArray());
+        return array_map(function($value){
+            return $this->clean($value);
+        }, $this->_attributes);
     }
-
-    public function toObject()
-    {
-        return json_decode($this->toJson());
-    }
-
-    public function __toString(): string
-    {
-        return $this->toJson();
-    }
-
 }

@@ -5,11 +5,12 @@ namespace PhpSchema\Observers;
 use ArrayObject;
 use PhpSchema\Traits\Observing;
 use PhpSchema\Contracts\Observable;
+use PhpSchema\Traits\ConvertsType;
 use PhpSchema\Contracts\Arrayable;
 
 class ArrayObserver extends ArrayObject implements Arrayable, Observable
 {
-    use Observing;
+    use Observing, ConvertsType;
     
     public function __construct(array $input = [], Observable $subscriber) {
         $this->addSubscriber($subscriber);

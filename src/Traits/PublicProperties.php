@@ -7,8 +7,6 @@ trait PublicProperties
     public function __set($key, $value)
     {
         $this->setAttribute($key, $value);
-
-        $this->validate();
     }
 
     public function __get($key)

@@ -180,4 +180,50 @@ class ModelTest extends TestCase
         $car->driver()->age = "forty-two";
     }
 
+    /** @test */
+    public function it_validates_across_the_graph()
+    {
+        // person->address doesn't allow additional properties
+        $person = new Person("Aaron", "Bullard");
+
+        $person->address = Factory::createDTO([
+            'type' => 'object'
+        ], [
+            "street_1" => "123 Walker Rd",
+            "city" => "Charleston",
+            "state" => "SC",
+            "zipcode" => "28412"
+        ]);
+
+        $this->expectException(ValidationException::class);
+
+        $person->address->country = "US";
+    }
+
+    public function a_test_speed()
+    {
+        $times = 100;
+        $start = microtime(true);
+        $dto = 0;
+        $model = 0;
+
+        for($i=0; $i < $times; $i++){
+            $obj = (object) [
+                "firstName" => "Aaron",
+                "lastName" => "Bullard"
+            ];
+        }
+        $dto = microtime(true);
+
+        for($i=0; $i < $times; $i++){
+            $obj = new Person("Aaron", "Bullard");
+        }
+        $model = microtime(true);
+
+        $dtoDiff = $dto - $start;
+        $modelDiff = $model - $dto;
+
+        print_r(compact('dtoDiff', 'modelDiff'));die;
+    }
+
 }

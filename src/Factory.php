@@ -30,7 +30,11 @@ class Factory
                 $this->_validator = new Validator;
                 $this->_attributes = [];
 
-                $params = $this->getConstructorParameters();
+                // Get parameters from constructor
+                $params = array_map(function($param){
+                    return $param->name;
+                }, (new ReflectionClass($this))->getConstructor()->getParameters());
+                
                 $this->hydrate($args);
                 $this->validate();
             }

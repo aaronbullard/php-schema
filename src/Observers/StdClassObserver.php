@@ -5,14 +5,15 @@ namespace PhpSchema\Observers;
 use StdClass, Iterator;
 use PhpSchema\Traits\Iterates;
 use PhpSchema\Traits\Observing;
-use PhpSchema\Contracts\Observable;
+use PhpSchema\Traits\ConvertsType;
 use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Contracts\Verifiable;
+use PhpSchema\Contracts\Observable;
 use PhpSchema\ValidationException;
 
 class StdClassObserver implements Arrayable, Observable, Iterator
 {
-    use Observing, Iterates;
+    use Observing, Iterates, ConvertsType;
 
     protected $obj;
 
