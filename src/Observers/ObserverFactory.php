@@ -3,25 +3,31 @@
 namespace PhpSchema\Observers;
 
 use StdClass;
-use PhpSchema\Contracts\Verifiable;
+use PhpSchema\Contracts\Observable;
 
 class ObserverFactory
 {
-    public static function createIfObservable($value, Verifiable $validator)
+    public static function create($value, Observable $subscriber)
     {
         if($value instanceof StdClass){
-            return new ObjectObserver($value, $validator);
+            $value = clone $value;
+            return new StdClassObserver($value, $subscriber);
         }
 
         if(is_array($value)){
-            return new ArrayObserver($value, $validator);
+            return new ArrayObserver($value, $subscriber);
+        }
+
+        if($value instanceof Observable){
+            $value->addSubscriber($subscriber);
+            return $value;
         }
  
-        return $value;
+        throw new \InvalidArgumentException("$value is not observable");
     }
 
     public static function isObservable($value): bool
     {
-        return is_array($value) || $value instanceof StdClass;
+        return is_array($value) || $value instanceof StdClass || $value instanceof Observable;
     }
 }

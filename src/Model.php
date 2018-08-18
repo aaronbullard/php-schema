@@ -3,14 +3,18 @@
 namespace PhpSchema;
 
 use ReflectionClass;
+use PhpSchema\Traits\Observing;
 use PhpSchema\Contracts\Arrayable;
-use PhpSchema\Contracts\Verifiable;
+use PhpSchema\Contracts\Observable;
 use PhpSchema\Traits\PublicProperties;
 use PhpSchema\Observers\ArrayObserver;
 use PhpSchema\Observers\ObjectObserver;
+use PhpSchema\Observers\ObserverFactory;
 
-abstract class Model implements Arrayable, Verifiable
+abstract class Model implements Arrayable, Observable
 {
+    use Observing;
+
     protected static $schema;
 
     protected $_validator;
@@ -49,14 +53,8 @@ abstract class Model implements Arrayable, Verifiable
 
     protected function setAttribute($key, $value)
     {
-        if(is_array($value)){
-            $value = new ArrayObserver($value, $this);
-        }
-
-        // Allow ArrayObserver out the door
-        if(is_object($value) && ($value instanceof ArrayObserver) === false){
-            $value = clone $value;
-            $value = new ObjectObserver($value, $this);
+        if(ObserverFactory::isObservable($value)){
+            $value = ObserverFactory::create($value, $this);
         }
 
         $this->_attributes[$key] = $value;
@@ -86,6 +84,15 @@ abstract class Model implements Arrayable, Verifiable
             $errors = $this->_validator->getErrors();
             throw ValidationException::withErrors($errors);
         }
+    }
+
+    public function notify($payload = null): void
+    {
+        $this->validate();
+
+        \array_walk($this->subscribers, function($sub) use ($payload){
+            $sub->notify($payload);
+        });
     }
 
     public function toArray(): array

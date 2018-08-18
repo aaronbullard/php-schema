@@ -4,7 +4,7 @@ namespace PhpSchema\Tests;
 
 use Mockery;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
-use PhpSchema\Model;
+use PhpSchema\Contracts\Observable;
 use PhpSchema\ValidationException;
 
 class TestCase extends PHPUnitTestCase
@@ -26,8 +26,8 @@ class TestCase extends PHPUnitTestCase
 
     protected function createModelMock($numOfValidations = 1)
     {
-        $val = Mockery::mock(Model::class);
-        $val->shouldReceive('validate')->times($numOfValidations);
+        $val = Mockery::mock(Observable::class);
+        $val->shouldReceive('notify')->times($numOfValidations);
 
         return $val;
     }
