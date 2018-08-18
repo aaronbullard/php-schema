@@ -90,13 +90,6 @@ class StdClassObserverTest extends TestCase
     }
 
     /** @test */
-    public function it_casts_to_array()
-    {
-        $obs = new StdClassObserver($this->obj, $this->createModelMock(0));
-        $this->assertEquals('Aaron', $obs->toArray()['child']['child']['name']);
-    }
-
-    /** @test */
     public function it_validates_for_two_parents()
     {
         $parent1 = $this->createModelMock(1);
@@ -107,6 +100,31 @@ class StdClassObserverTest extends TestCase
 
         $obs->child->child->name = 'James';
         $this->assertEquals('James', $obs->child->child->name);
+    }
+
+    /** @test */
+    public function it_casts_to_array()
+    {
+        $obs = new StdClassObserver($this->obj, $this->createModelMock(0));
+        $this->assertEquals('Aaron', $obs->toArray()['child']['child']['name']);
+    }
+
+    /** @test */
+    public function it_is_iterable()
+    {
+        $obj = new \StdClass();
+        $obj->one = 'one';
+        $obj->two = 'two';
+        $obj->three = 'three';
+
+        $obs = new StdClassObserver($obj, $this->createModelMock(0));
+
+        $result = "";
+        foreach($obs as $key => $value){
+            $result .= $value;
+        }
+        
+        $this->assertEquals("onetwothree", $result);
     }
 
 }

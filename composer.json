@@ -22,7 +22,8 @@
         },
         "classmap": [
             "tests"
-        ]
+        ],
+        "files": ["tests/helpers.php"]
     },
     "scripts": {
         "test": "./vendor/bin/phpunit --colors=always --coverage-html=./coverage --coverage-text=tests/summary.txt"
