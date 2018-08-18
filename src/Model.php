@@ -4,9 +4,12 @@ namespace PhpSchema;
 
 use ReflectionClass;
 use PhpSchema\Contracts\Arrayable;
+use PhpSchema\Contracts\Verifiable;
 use PhpSchema\Traits\PublicProperties;
+use PhpSchema\Observers\ArrayObserver;
+use PhpSchema\Observers\ObjectObserver;
 
-abstract class Model implements Arrayable
+abstract class Model implements Arrayable, Verifiable
 {
     protected static $schema;
 
@@ -50,7 +53,20 @@ abstract class Model implements Arrayable
             $value = new ArrayObserver($value, $this);
         }
 
+        // Allow ArrayObserver out the door
+        if(is_object($value) && ($value instanceof ArrayObserver) === false){
+            $value = clone $value;
+            $value = new ObjectObserver($value, $this);
+        }
+
         $this->_attributes[$key] = $value;
+    }
+
+    protected function getAttribute($key)
+    {
+        $value = $this->_attributes[$key];
+
+        return $value;
     }
 
     public function hydrate(array $data)
@@ -60,7 +76,7 @@ abstract class Model implements Arrayable
         }
     }
 
-    public function validate()
+    public function validate(): void
     {
         $object = $this->toObject();
 
@@ -101,7 +117,7 @@ abstract class Model implements Arrayable
 
         // Some unknown object
         if(is_object($value)){
-            throw new ValidationException("Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface");
+            throw ValidationException::ARRAYABLE();
         }
 
         return $value;

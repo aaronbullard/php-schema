@@ -11,7 +11,7 @@ trait MethodAccess
     {
         if($this->isGetterMethod($method) && empty($args)){
             $key = $this->getMethodToAttributeTransformer($method);
-            return $this->_attributes[$key];
+            return $this->getAttribute($key);
         } 
         
         if($this->isSetterMethod($method)) {

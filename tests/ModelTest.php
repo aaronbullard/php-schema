@@ -2,8 +2,10 @@
 
 namespace PhpSchema\Tests;
 
-use PhpSchema\Tests\Entity\Contact;
+use PhpSchema\Factory;
+use PhpSchema\Tests\Entity\Car;
 use PhpSchema\Tests\Entity\Person;
+use PhpSchema\Tests\Entity\Contact;
 use PhpSchema\Tests\Entity\Address;
 use PhpSchema\Tests\Entity\PhoneNumber;
 use PhpSchema\Tests\Entity\UnknownClass;
@@ -62,8 +64,10 @@ class ModelTest extends TestCase
         $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
 
         $person->address = $address;
-
-        $this->assertInstanceOf(Address::class, $person->address);
+        $this->expectException(ValidationException::class);
+        $address = $address->toObject();
+        unset($address->state);
+        $person->address = $address;
     }
 
     /** @test */
@@ -76,10 +80,7 @@ class ModelTest extends TestCase
 
         unset($address->state);
 
-        $this->expectException(
-            ValidationException::class
-        );
-
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage(
             "There are errors in the following properties: address.state"
         );
@@ -121,10 +122,7 @@ class ModelTest extends TestCase
         $random = new UnknownClass();
 
          // enforces schema
-        $this->expectException(
-            ValidationException::class
-        );
-
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage(
             "Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface"
         );
@@ -143,9 +141,7 @@ class ModelTest extends TestCase
         $contact->phoneNumbers[] = new PhoneNumber("2");
 
         $this->assertCount(2, $contact->phoneNumbers);
-        $this->expectException(
-            ValidationException::class
-        );
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage(
             "There are errors in the following properties: phoneNumbers[2].number"
         );
@@ -153,19 +149,35 @@ class ModelTest extends TestCase
     }
 
     /** @test */
-    public function array_attributes_are_iterable()
+    public function it_prevents_embeddable_objects_from_mutating_by_reference()
     {
-        $person = new Person("Aaron", "Bullard");
-        $contact = new Contact($person);
+        $car = new Car(42, "Jeep", "ABC123");
 
-        $contact->phoneNumbers = [];
-        $contact->phoneNumbers[] = new PhoneNumber("1");
-        $contact->phoneNumbers[] = new PhoneNumber("2");
+        $person = new \stdClass;
+        $person->firstName = "Aaron";
+        $person->lastName = "Bullard";
+        $person->age = 42;
 
-        $this->assertCount(2, $contact->phoneNumbers);
+        $car->driver($person); // person is cloned to prevent outside access
 
-        foreach($contact->phoneNumbers as $number){
-            $this->assertInstanceOf(PhoneNumber::class, $number);
-        }
+        $person->age = "forty-two";
+        $this->assertEquals(42, $car->toArray()['driver']['age']);
     }
+
+    /** @test */
+    public function it_validates_embeddables_when_they_mutate()
+    {
+        $car = new Car(42, "Jeep", "ABC123");
+
+        $person = new \stdClass;
+        $person->firstName = "Aaron";
+        $person->lastName = "Bullard";
+        $person->age = 42;
+
+        $car->driver($person);
+
+        $this->expectException(ValidationException::class);
+        $car->driver()->age = "forty-two";
+    }
+
 }

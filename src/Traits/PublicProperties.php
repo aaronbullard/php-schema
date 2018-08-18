@@ -13,6 +13,6 @@ trait PublicProperties
 
     public function __get($key)
     {
-        return $this->_attributes[$key];
+        return $this->getAttribute($key);
     }
 }

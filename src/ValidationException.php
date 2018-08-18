@@ -4,6 +4,8 @@ namespace PhpSchema;
 
 class ValidationException extends \InvalidArgumentException
 {
+    const ARRAYABLE = "Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface";
+
     protected $errors;
 
     public static function withErrors(array $errors)
@@ -24,5 +26,10 @@ class ValidationException extends \InvalidArgumentException
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    public static function ARRAYABLE()
+    {
+        return new static(static::ARRAYABLE);
     }
 }
