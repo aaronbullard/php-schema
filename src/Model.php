@@ -14,6 +14,12 @@ abstract class Model implements Arrayable
     
     protected $_attributes;
 
+    /**
+     * Child classes must implement constructor if the schema contains required properties.
+     * Parameter names must match the names (case-sensitive) as described in the schema.
+     *
+     * @param mixed ...$args
+     */
     public function __construct(...$args)
     {
         $this->_validator = new Validator;
