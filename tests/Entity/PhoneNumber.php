@@ -18,6 +18,13 @@ class PhoneNumber implements Arrayable
         return $this->number;
     }
 
+    public function setNumber($number)
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return ['number' => $this->number];

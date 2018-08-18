@@ -20,8 +20,9 @@ class StdClassObserver implements Arrayable, Observable
         $this->obj = $obj;
         $this->addSubscriber($subscriber);
 
-        foreach($this->obj as $prop => $value){
-            $this->obj->$prop = $this->wrapIfObservable($value);
+        foreach($this->obj as $key => $value){
+            $this->unsetByKey($key);
+            $this->obj->$key = $this->wrapIfObservable($value);
         }
     }
 
@@ -32,9 +33,29 @@ class StdClassObserver implements Arrayable, Observable
 
     public function __set($key, $value)
     {
+        $this->unsetByKey($key);
+        
         $this->obj->$key = $this->wrapIfObservable($value);
 
         $this->notify();
+    }
+
+    public function __unset($key)
+    {
+        $this->unsetByKey($key);
+
+        unset($this->obj->$key);
+
+        $this->notify();
+    }
+
+    protected function unsetByKey($key)
+    {
+        $old = $this->obj->$key;
+
+        if($old instanceof Observable){
+            $old->removeSubscriber($this);
+        }
     }
 
     protected function wrapIfObservable($value)
@@ -45,15 +66,6 @@ class StdClassObserver implements Arrayable, Observable
 
         return $value;
     }
-
-    // public function __call($method, $args)
-    // {
-    //     $value = $this->obj->$method(...$args);
-
-    //     $this->parent->validate();
-
-    //     return $value;
-    // }
 
     public function toArray(): array
     {

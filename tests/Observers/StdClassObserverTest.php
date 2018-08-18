@@ -34,6 +34,34 @@ class StdClassObserverTest extends TestCase
         $this->assertEquals('JD', $obs->name);
     }
 
+    /** @test */
+    public function it_validates_on_unset()
+    {
+        $obs = new StdClassObserver($this->obj, $this->createModelMock(2));
+        
+        $grandchild = $this->obj->child->child;
+        $grandchild->name = "A-A-ron"; // one validation
+
+        unset($this->obj->child->child); // two times
+        $grandchild->name = "Aaron"; // no validation runs
+
+        $this->assertEquals(null, $this->obj->child->child);
+    }
+
+    /** @test */
+    public function it_validates_on_unset_by_pointer()
+    {
+        $obs = new StdClassObserver($this->obj, $this->createModelMock(2));
+        
+        $grandchild = $this->obj->child->child;
+        $grandchild->name = "A-A-ron"; // one validation
+
+        $this->obj->child->child = (object)['name' => 'Bob']; // two times
+        $grandchild->name = "Aaron"; // no validation runs
+
+        $this->assertEquals("Bob", $this->obj->child->child->name);
+    }
+
     /** @skip */
     // public function it_validates_after_method_call()
     // {
@@ -80,4 +108,5 @@ class StdClassObserverTest extends TestCase
         $obs->child->child->name = 'James';
         $this->assertEquals('James', $obs->child->child->name);
     }
+
 }
