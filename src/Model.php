@@ -9,7 +9,6 @@ use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\Traits\PublicProperties;
 use PhpSchema\Observers\ArrayObserver;
-use PhpSchema\Observers\ObjectObserver;
 use PhpSchema\Observers\ObserverFactory;
 
 abstract class Model implements Arrayable, Observable
@@ -100,23 +99,9 @@ abstract class Model implements Arrayable, Observable
 
     protected function clean($value)
     {
-        if($value instanceof ArrayObserver){
-            $value = $value->toArray();
-        }
-
-        if(is_array($value)){
-            return array_map(function($v){
-                return $this->clean($v);
-            }, $value);
-        }
-
-        if($value instanceof Arrayable){
-            return $value->toArray();
-        }
-
-        if($value instanceof \StdClass){
-            return json_decode(json_encode($value), true);
-        }
+        $value = $value instanceof Arrayable 
+                    ? $value->toArray() 
+                    : $value;
 
         // Some unknown object
         if(is_object($value)){

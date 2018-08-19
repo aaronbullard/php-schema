@@ -74,13 +74,9 @@ class StdClassObserver implements Arrayable, Observable, Iterator
         $arr = [];
 
         foreach($this->obj as $prop => $value){
-            if($value instanceof Arrayable){
-                $arr[$prop] = $value->toArray();
-            } else {
-                $arr[$prop] = $value;
-            }
+            $arr[$prop] = $value instanceof Arrayable ? $value->toArray() : $value;
         }
 
-        return json_decode(json_encode($arr), true);
+        return $arr;
     }
 }

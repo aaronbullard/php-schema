@@ -47,14 +47,42 @@ class ModelTest extends TestCase
     }
 
     /** @test */
+    public function it_converts_to_an_array_deep_structures()
+    {
+        $person = new Person("Aaron", "Bullard");
+        $person->phoneNumber = (object)[
+            'name' => '1',
+            'children' => [
+                ['name' => '1.1'],
+                ['name' => '1.2'],
+                [
+                    'name' => '1.3',
+                    'child' => ['name' => '1.3.1']
+                ]
+            ]
+        ];
+
+        $arr = $person->toArray();
+        $this->assertEquals($arr['firstName'], "Aaron");
+        $this->assertEquals($arr['phoneNumber']['name'], "1");
+        $this->assertEquals($arr['phoneNumber']['children'][0]['name'], "1.1");
+        $this->assertEquals($arr['phoneNumber']['children'][1]['name'], "1.2");
+        $this->assertEquals($arr['phoneNumber']['children'][2]['name'], "1.3");
+        $this->assertEquals($arr['phoneNumber']['children'][2]['child']['name'], "1.3.1");
+    }
+
+    /** @test */
     public function it_converts_to_a_stdClass()
     {
         $person = new Person("Aaron", "Bullard");
+        $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
+        $person->address = $address->toObject();
 
         $stdClass = $person->toObject();
 
         $this->assertInstanceOf(\StdClass::class, $stdClass);
         $this->assertEquals($stdClass->firstName, "Aaron");
+        $this->assertEquals($stdClass->address->city, "Charleston");
     }
 
     /** @test */
@@ -200,9 +228,9 @@ class ModelTest extends TestCase
         $person->address->country = "US";
     }
 
-    public function a_test_speed()
+    public function a_speed_test()
     {
-        $times = 100;
+        $times = 10000;
         $start = microtime(true);
         $dto = 0;
         $model = 0;

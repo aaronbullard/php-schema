@@ -55,6 +55,10 @@ class ArrayObserver extends ArrayObject implements Arrayable, Observable
 
     public function toArray(): array
     {
-        return $this->getArrayCopy();
+        return array_map(function($value){
+            return $value instanceof Arrayable 
+                        ? $value->toArray() 
+                        : $value;
+        }, $this->getArrayCopy());
     }
 }
