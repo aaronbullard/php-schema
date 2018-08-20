@@ -3,17 +3,15 @@
 namespace PhpSchema;
 
 use ReflectionClass;
-use PhpSchema\Traits\Observing;
 use PhpSchema\Traits\ConvertsType;
 use PhpSchema\Contracts\Arrayable;
-use PhpSchema\Contracts\Observable;
+// use PhpSchema\Contracts\Observable;
 use PhpSchema\Traits\PublicProperties;
-use PhpSchema\Observers\ArrayObserver;
 use PhpSchema\Observers\ObserverFactory;
 
-abstract class SchemaModel extends Model implements Arrayable, Observable
+abstract class SchemaModel extends Model implements Arrayable
 {
-    use Observing, ConvertsType;
+    use ConvertsType;
 
     protected static $schema;
 

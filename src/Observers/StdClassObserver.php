@@ -11,7 +11,9 @@ use PhpSchema\Contracts\Observable;
 use PhpSchema\Traits\PublicProperties;
 use PhpSchema\ValidationException;
 
-class StdClassObserver extends Model implements Iterator, Observable, Arrayable
+use PhpSchema\Traits\Observing;
+
+class StdClassObserver extends Model implements Iterator, Arrayable
 {
     use PublicProperties, Iterates, ConvertsType;
 
