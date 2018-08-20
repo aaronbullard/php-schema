@@ -38,7 +38,6 @@ abstract class Model implements Arrayable, Observable
         }, (new ReflectionClass($this))->getConstructor()->getParameters());
 
         $this->hydrate(array_combine($params, $args));
-        $this->validate();
     }
 
     public function getSchema()
@@ -46,13 +45,15 @@ abstract class Model implements Arrayable, Observable
         return static::$schema;
     }
 
-    protected function setAttribute($key, $value)
+    protected function hydrate(array $data)
     {
-        if(ObserverFactory::isObservable($value)){
-            $value = ObserverFactory::create($value, $this);
-        }
+        foreach($data as $key => $value){
+            $this->stopObserving($key);
 
-        $this->_attributes[$key] = $value;
+            $this->_attributes[$key] = $value;
+
+            $this->startObserving($key);
+        }
 
         $this->validate();
         $this->notify();
@@ -63,17 +64,49 @@ abstract class Model implements Arrayable, Observable
         return $this->_attributes[$key];
     }
 
-    public function hydrate(array $data)
+    protected function setAttribute($key, $value)
     {
-        foreach($data as $key => $value){
-            if(ObserverFactory::isObservable($value)){
-                $value = ObserverFactory::create($value, $this);
-            }
-    
-            $this->_attributes[$key] = $value;
-        }
+        $this->stopObserving($key);
+
+        $this->_attributes[$key] = $value;
+
+        $this->startObserving($key);
+
+        $this->validate();
 
         $this->notify();
+    }
+
+    protected function unsetAttribute($key)
+    {
+        $this->stopObserving($key);
+
+        unset($this->_attributes[$key]);
+    }
+
+    protected function keyExists($key)
+    {
+        return isset($this->_attributes[$key]);
+    }
+
+    protected function startObserving($key)
+    {
+        $value = $this->_attributes[$key];
+
+        if(ObserverFactory::isObservable($value)){
+            $value = ObserverFactory::create($value, $this);
+        }
+
+        $this->_attributes[$key] = $value;
+    }
+
+    protected function stopObserving($key)
+    {
+        $value = $this->_attributes[$key];
+
+        if($value instanceof Observable){
+            $value->removeSubscriber($this);
+        }
     }
 
     public function validate(): void

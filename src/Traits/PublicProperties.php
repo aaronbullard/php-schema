@@ -13,4 +13,14 @@ trait PublicProperties
     {
         return $this->getAttribute($key);
     }
+
+    public function __unset($key)
+    {
+        $this->unsetAttribute($key);
+    }
+
+    public function __isset($key)
+    {
+        return $this->keyExists($key);
+    }
 }

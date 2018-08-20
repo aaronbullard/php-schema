@@ -18,7 +18,7 @@
 		},
         "state": {
 			"type": "string",
-            "maximum": 2
+            "maxLength": 2
 		},
 		"zipcode": {
             "type": "string",

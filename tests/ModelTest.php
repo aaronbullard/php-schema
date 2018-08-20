@@ -9,12 +9,13 @@ use PhpSchema\Tests\Entity\Contact;
 use PhpSchema\Tests\Entity\Address;
 use PhpSchema\Tests\Entity\PhoneNumber;
 use PhpSchema\Tests\Entity\UnknownClass;
+use PhpSchema\Contracts\Observable;
 use PhpSchema\ValidationException;
 
 class ModelTest extends TestCase
 {
     /** @test */
-    public function it_sets_init_properties()
+    public function it_sets_and_gets_init_properties()
     {
         $person = new Person("Aaron", "Bullard");
 
@@ -34,6 +35,14 @@ class ModelTest extends TestCase
         );
         
         $person = new Person("Aaron", null);
+    }
+
+    /** @test */
+    public function it_validates_on_initialization()
+    {
+        $this->expectException(ValidationException::class);
+
+        new Address("123 Walker Rd", null, "Charleston", "NOT_A_STATE", "29464");
     }
 
     /** @test */
@@ -228,7 +237,24 @@ class ModelTest extends TestCase
         $person->address->country = "US";
     }
 
-    public function a_speed_test()
+    /** @test */
+    public function it_stops_observing_orphaned_objects()
+    {
+        $person = new Person("Aaron", "Bullard");
+        $address = (new Address("123 Walker Rd", null, "Charleston", "SC", "29464"))->toObject();
+
+        $person->address = $address;
+        $address = $person->address;
+        $this->assertInstanceOf(Observable::class, $address);
+
+        unset($person->address);
+        $this->assertEquals(null, $person->address);
+
+        // Ensure no validation error is thrown, no longer observing
+        $address->state = "South Carolina";
+    }
+
+    public function xtest_speed_test()
     {
         $times = 10000;
         $start = microtime(true);
