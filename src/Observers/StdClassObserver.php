@@ -3,22 +3,23 @@
 namespace PhpSchema\Observers;
 
 use StdClass, Iterator;
+use PhpSchema\Model;
 use PhpSchema\Traits\Iterates;
-use PhpSchema\Traits\Observing;
 use PhpSchema\Traits\ConvertsType;
 use PhpSchema\Contracts\Arrayable;
-use PhpSchema\Contracts\Verifiable;
 use PhpSchema\Contracts\Observable;
+use PhpSchema\Traits\PublicProperties;
 use PhpSchema\ValidationException;
 
-class StdClassObserver implements Arrayable, Observable, Iterator
+class StdClassObserver extends Model implements Iterator, Observable, Arrayable
 {
-    use Observing, Iterates, ConvertsType;
+    use PublicProperties, Iterates, ConvertsType;
 
     protected $obj;
 
     public function __construct(StdClass $obj, Observable $subscriber)
     {
+        // Do we need to clone this?
         $this->obj = $obj;
         $this->addSubscriber($subscriber);
 
@@ -29,57 +30,34 @@ class StdClassObserver implements Arrayable, Observable, Iterator
         }
     }
 
-    public function __get($key)
+    protected function getAttribute($key)
     {
         return $this->obj->$key;
     }
 
-    public function __set($key, $value)
+    protected function setAttribute($key, $value): void
     {
-        $this->stopObserving($key);
-        
         $this->obj->$key = $value;
-        
-        $this->startObserving($key);
-
-        $this->notify();
     }
 
-    public function __unset($key)
+    protected function unsetAttribute($key): void
     {
-        $this->stopObserving($key);
-
         unset($this->obj->$key);
-
-        $this->notify();
     }
 
-    protected function startObserving($key)
+    protected function keyExists($key)
     {
-        $value = $this->obj->$key;
-
-        if(ObserverFactory::isObservable($value)){
-            $value = ObserverFactory::create($value, $this);
-        }
-
-        $this->obj->$key = $value;
+        return isset($this->obj->$key);
     }
 
-    protected function stopObserving($key)
-    {
-        $value = $this->obj->$key;
-
-        if($value instanceof Observable){
-            $value->removeSubscriber($this);
-        }
-    }
-    
     public function toArray(): array
     {
         $arr = [];
 
         foreach($this->obj as $prop => $value){
-            $arr[$prop] = $value instanceof Arrayable ? $value->toArray() : $value;
+            $arr[$prop] = $value instanceof Arrayable 
+                            ? $value->toArray() 
+                            : $value;
         }
 
         return $arr;

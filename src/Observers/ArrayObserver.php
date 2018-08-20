@@ -46,20 +46,20 @@ class ArrayObserver extends ArrayObject implements Arrayable, Observable
         $this->notify();
     }
 
-    protected function startObserving($offset)
+    protected function startObserving($key): void
     {
-        $value = parent::offsetGet($offset);
+        $value = parent::offsetGet($key);
 
         if(ObserverFactory::isObservable($value)){
             $value = ObserverFactory::create($value, $this);
         }
 
-        parent::offsetSet($offset, $value);
+        parent::offsetSet($key, $value);
     }
 
-    protected function stopObserving($offset)
+    protected function stopObserving($key): void
     {
-        $value = parent::offsetGet($offset);
+        $value = parent::offsetGet($key);
 
         if($value instanceof Observable){
             $value->removeSubscriber($this);

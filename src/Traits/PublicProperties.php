@@ -6,7 +6,13 @@ trait PublicProperties
 {
     public function __set($key, $value)
     {
+        $this->stopObserving($key);
+
         $this->setAttribute($key, $value);
+
+        $this->startObserving($key);
+
+        $this->notify();
     }
 
     public function __get($key)
@@ -16,7 +22,11 @@ trait PublicProperties
 
     public function __unset($key)
     {
+        $this->stopObserving($key);
+
         $this->unsetAttribute($key);
+
+        $this->notify();
     }
 
     public function __isset($key)

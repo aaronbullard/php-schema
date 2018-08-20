@@ -25,7 +25,15 @@ trait MethodAccess
 
             $key = $this->setMethodToAttributeTransformer($method);
 
+            $this->stopObserving($key);
+
             $this->setAttribute($key, $args[0]);
+
+            $this->startObserving($key);
+
+            $this->validate();
+
+            $this->notify();
 
             return $this;
         }

@@ -2,10 +2,10 @@
 
 namespace PhpSchema\Tests\Entity;
 
-use PhpSchema\Model;
+use PhpSchema\SchemaModel;
 use PhpSchema\Traits\PublicProperties;
 
-class PublicPropertiesModel extends Model
+class PublicPropertiesModel extends SchemaModel
 {
     use PublicProperties;
 }

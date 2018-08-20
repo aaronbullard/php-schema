@@ -18,7 +18,7 @@ class Factory
      */
     public static function createDTO($schema, array $args = [])
     {
-        return new class($args, $schema) extends Model
+        return new class($args, $schema) extends SchemaModel
         {
             use PublicProperties;
 

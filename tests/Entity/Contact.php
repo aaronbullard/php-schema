@@ -2,8 +2,6 @@
 
 namespace PhpSchema\Tests\Entity;
 
-use PhpSchema\Model;
-
 class Contact extends PublicPropertiesModel
 {
     protected static $schema = [

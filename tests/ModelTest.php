@@ -12,7 +12,7 @@ use PhpSchema\Tests\Entity\UnknownClass;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\ValidationException;
 
-class ModelTest extends TestCase
+class SchemaModelTest extends TestCase
 {
     /** @test */
     public function it_sets_and_gets_init_properties()
@@ -266,11 +266,15 @@ class ModelTest extends TestCase
                 "firstName" => "Aaron",
                 "lastName" => "Bullard"
             ];
+            $obj->firstName = 'a';
+            $obj->firstName = 'b';
         }
         $dto = microtime(true);
 
         for($i=0; $i < $times; $i++){
             $obj = new Person("Aaron", "Bullard");
+            $obj->firstName = 'a';
+            $obj->firstName = 'b';
         }
         $model = microtime(true);
 
