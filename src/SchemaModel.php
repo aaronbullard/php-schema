@@ -5,7 +5,6 @@ namespace PhpSchema;
 use ReflectionClass;
 use PhpSchema\Traits\ConvertsType;
 use PhpSchema\Contracts\Arrayable;
-// use PhpSchema\Contracts\Observable;
 use PhpSchema\Traits\PublicProperties;
 use PhpSchema\Observers\ObserverFactory;
 
