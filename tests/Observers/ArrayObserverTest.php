@@ -1,9 +1,10 @@
 <?php
 
-namespace PhpSchema\Test\Observers;
+namespace PhpSchema\Tests\Observers;
 
 use StdClass;
 use PhpSchema\Tests\TestCase;
+use PhpSchema\Tests\Entity\Person;
 use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Observers\ArrayObserver;
 
@@ -12,8 +13,7 @@ class ArrayObserverTest extends TestCase
     /** @test */
     public function it_observes_set_mutation()
     {
-        $numOfValidations = 4;
-        $obs = new ArrayObserver([], $this->createModelMock($numOfValidations));
+        $obs = new ArrayObserver([], $this->createModelMock(4));
 
         $obs[] = 'hello world'; // 1
         $obs[] = 'hello world'; // 2
@@ -32,8 +32,7 @@ class ArrayObserverTest extends TestCase
     /** @test */
     public function it_observes_item_mutation()
     {
-        $numOfValidations = 3;
-        $obs = new ArrayObserver([], $this->createModelMock($numOfValidations));
+        $obs = new ArrayObserver([], $this->createModelMock(3));
 
         $obs[] = new StdClass; // 1
         $obs[] = new StdClass; // 2
@@ -55,9 +54,11 @@ class ArrayObserverTest extends TestCase
         $aaron = $obs[0];
         $aaron->name = "Aaron"; // 3
 
+        // unset by offset
         unset($obs[0]); // 4
         $aaron->name = "A-A-ron"; // nothing happens
 
+        // unset by replace
         $bob = $obs[1];
         $obs[1] = new StdClass; // 5
         $bob->name = "Bob"; // nothing happens
@@ -66,11 +67,32 @@ class ArrayObserverTest extends TestCase
     }
 
     /** @test */
+    public function it_subscribes_to_children()
+    {
+        $obs = new ArrayObserver([
+            'firstName' => "Aaron",
+            'lastName' => "Bullard",
+            'model' => new Person("Aaron", "Bullard"),
+            'stdclass' => (object)['firstName' => "Aaron", 'lastName' => "Bullard"],
+            'array' => [1, 2, 3]
+        ], $this->createModelMock(3));
+
+        $obs['model']->firstName = "A-A-ron"; // 1
+        $obs['stdclass']->firstName = "A-A-ron"; // 2
+        $obs['array'][1] = '2'; // 3
+
+        $this->assertCount(5, $obs);
+    }
+
+    /** @test */
     public function it_is_arrayable()
     {
         $obs = new ArrayObserver([
             'firstName' => "Aaron",
-            'lastName' => "Bullard"
+            'lastName' => "Bullard",
+            'model' => new Person("Aaron", "Bullard"),
+            'stdclass' => (object)['firstName' => "Aaron", 'lastName' => "Bullard"],
+            'array' => [1, 2, 3]
         ], $this->createModelMock(0));
 
         $this->assertInstanceOf(Arrayable::class, $obs);
@@ -78,6 +100,9 @@ class ArrayObserverTest extends TestCase
         $arr = $obs->toArray();
         $this->assertTrue(is_array($arr));
         $this->assertEquals("Aaron", $arr['firstName']);
+        $this->assertEquals("Aaron", $arr['model']['firstName']);
+        $this->assertEquals("Aaron", $arr['stdclass']['firstName']);
+        $this->assertEquals("2", $arr['array'][1]);
     }
 
 }

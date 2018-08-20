@@ -20,7 +20,9 @@ trait Iterates
 
     public function key()
     {
-        $keys = array_values(get_object_vars($this->obj));
+        $keys = array_values(
+            get_object_vars($this->obj)
+        );
 
         return $keys[$this->position];
     }

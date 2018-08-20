@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSchema\Test\Observers;
+namespace PhpSchema\Tests\Observers;
 
 use PhpSchema\Tests\TestCase;
 use PhpSchema\Contracts\Arrayable;

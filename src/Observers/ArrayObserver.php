@@ -12,45 +12,58 @@ class ArrayObserver extends ArrayObject implements Arrayable, Observable
 {
     use Observing, ConvertsType;
     
-    public function __construct(array $input = [], Observable $subscriber) {
+    public function __construct(array $input = [], Observable $subscriber)
+    {
         $this->addSubscriber($subscriber);
 
-        $input = array_map(function($item){
-            return $this->wrapIfObservable($item);
-        }, $input);
-
         parent::__construct($input);
-    }
 
-    public function offsetSet($offset, $value) {
-        $this->unsetByKey($offset);
-        $value = $this->wrapIfObservable($value);
-        parent::offsetSet($offset, $value);
-        $this->notify();
-    }
-
-    public function offsetUnset($offset) {
-        $this->unsetByKey($offset);
-        parent::offsetUnset($offset);
-        $this->notify();
-    }
-
-    protected function unsetByKey($key)
-    {
-        $old = parent::offsetGet($key);
-
-        if($old instanceof Observable){
-            $old->removeSubscriber($this);
+        foreach($this as $offset => $value){
+            $this->stopObserving($offset);
+            $this->startObserving($offset);
         }
     }
 
-    protected function wrapIfObservable($value)
+    public function offsetSet($offset, $value)
     {
+        $offset = $offset ?? count($this);
+
+        $this->stopObserving($offset);
+
+        parent::offsetSet($offset, $value);
+
+        $this->startObserving($offset);
+        
+        $this->notify();
+    }
+
+    public function offsetUnset($offset)
+    {
+        $this->stopObserving($offset);
+
+        parent::offsetUnset($offset);
+
+        $this->notify();
+    }
+
+    protected function startObserving($offset)
+    {
+        $value = parent::offsetGet($offset);
+
         if(ObserverFactory::isObservable($value)){
             $value = ObserverFactory::create($value, $this);
         }
 
-        return $value;
+        parent::offsetSet($offset, $value);
+    }
+
+    protected function stopObserving($offset)
+    {
+        $value = parent::offsetGet($offset);
+
+        if($value instanceof Observable){
+            $value->removeSubscriber($this);
+        }
     }
 
     public function toArray(): array

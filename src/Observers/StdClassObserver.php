@@ -22,9 +22,10 @@ class StdClassObserver implements Arrayable, Observable, Iterator
         $this->obj = $obj;
         $this->addSubscriber($subscriber);
 
+        // Setup subscription
         foreach($this->obj as $key => $value){
-            $this->unsetByKey($key);
-            $this->obj->$key = $this->wrapIfObservable($value);
+            $this->stopObserving($key);
+            $this->startObserving($key);
         }
     }
 
@@ -35,40 +36,44 @@ class StdClassObserver implements Arrayable, Observable, Iterator
 
     public function __set($key, $value)
     {
-        $this->unsetByKey($key);
+        $this->stopObserving($key);
         
-        $this->obj->$key = $this->wrapIfObservable($value);
+        $this->obj->$key = $value;
+        
+        $this->startObserving($key);
 
         $this->notify();
     }
 
     public function __unset($key)
     {
-        $this->unsetByKey($key);
+        $this->stopObserving($key);
 
         unset($this->obj->$key);
 
         $this->notify();
     }
 
-    protected function unsetByKey($key)
+    protected function startObserving($key)
     {
-        $old = $this->obj->$key;
+        $value = $this->obj->$key;
 
-        if($old instanceof Observable){
-            $old->removeSubscriber($this);
-        }
-    }
-
-    protected function wrapIfObservable($value)
-    {
         if(ObserverFactory::isObservable($value)){
             $value = ObserverFactory::create($value, $this);
         }
 
-        return $value;
+        $this->obj->$key = $value;
     }
 
+    protected function stopObserving($key)
+    {
+        $value = $this->obj->$key;
+
+        if($value instanceof Observable){
+            $value->removeSubscriber($this);
+        }
+    }
+    
     public function toArray(): array
     {
         $arr = [];
