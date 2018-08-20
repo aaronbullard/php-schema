@@ -3,6 +3,7 @@
 namespace PhpSchema\Traits;
 
 use PhpSchema\Contracts\Observable;
+use PhpSchema\Observers\ObserverFactory;
 
 trait Observing
 {
@@ -31,5 +32,25 @@ trait Observing
         \array_walk($this->subscribers, function($sub) use ($payload){
             $sub->notify($payload);
         });
+    }
+
+    protected function startObserving($key)
+    {
+        $value = $this->getAttribute($key);
+
+        if(ObserverFactory::isObservable($value)){
+            $value = ObserverFactory::create($value, $this);
+        }
+
+        $this->setAttribute($key, $value);
+    }
+
+    protected function stopObserving($key)
+    {
+        $value = $this->getAttribute($key);
+
+        if($value instanceof Observable){
+            $value->removeSubscriber($this);
+        }
     }
 }

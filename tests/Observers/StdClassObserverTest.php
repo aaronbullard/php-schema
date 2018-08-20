@@ -39,13 +39,13 @@ class StdClassObserverTest extends TestCase
     {
         $obs = new StdClassObserver($this->obj, $this->createModelMock(2));
         
-        $grandchild = $this->obj->child->child;
+        $grandchild = $obs->child->child;
         $grandchild->name = "A-A-ron"; // one validation
 
-        unset($this->obj->child->child); // two times
+        unset($obs->child->child); // two times
         $grandchild->name = "Aaron"; // no validation runs
 
-        $this->assertEquals(null, $this->obj->child->child);
+        $this->assertEquals(null, $obs->child->child);
     }
 
     /** @test */
@@ -53,13 +53,13 @@ class StdClassObserverTest extends TestCase
     {
         $obs = new StdClassObserver($this->obj, $this->createModelMock(2));
         
-        $grandchild = $this->obj->child->child;
+        $grandchild = $obs->child->child;
         $grandchild->name = "A-A-ron"; // one validation
 
-        $this->obj->child->child = (object)['name' => 'Bob']; // two times
+        $obs->child->child = (object)['name' => 'Bob']; // two times
         $grandchild->name = "Aaron"; // no validation runs
 
-        $this->assertEquals("Bob", $this->obj->child->child->name);
+        $this->assertEquals("Bob", $obs->child->child->name);
     }
 
     /** @skip */
@@ -87,6 +87,21 @@ class StdClassObserverTest extends TestCase
 
         $obs->child->child->name = 'James';
         $this->assertEquals('James', $obs->child->child->name);
+    }
+
+    /** @test */
+    public function it_prevents_outside_mutation_once_passed()
+    {
+        $obs = new StdClassObserver($this->obj, $this->createModelMock(1));
+
+        $newChild = (object)['name' => 'Test'];
+
+        $obs->child->child = $newChild;
+
+        $newChild->name = 'Changed';
+
+        $this->assertEquals('Test', $obs->child->child->name);
+        $this->assertEquals('Changed', $newChild->name);
     }
 
     /** @test */

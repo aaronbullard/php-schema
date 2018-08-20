@@ -22,7 +22,7 @@ class StdClassObserver extends Model implements Iterator, Arrayable
     public function __construct(StdClass $obj, Observable $subscriber)
     {
         // Do we need to clone this?
-        $this->obj = $obj;
+        $this->obj = clone $obj;
         $this->addSubscriber($subscriber);
 
         // Setup subscription
