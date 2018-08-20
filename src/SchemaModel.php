@@ -14,6 +14,8 @@ abstract class SchemaModel extends Model implements Arrayable
 
     protected static $schema;
 
+    protected static $_classArgs = [];
+
     protected $_validator;
     
     protected $_attributes;
@@ -29,12 +31,20 @@ abstract class SchemaModel extends Model implements Arrayable
         $this->_validator = new Validator;
         $this->_attributes = [];
 
-        // Get parameters from constructor
-        $params = array_map(function($param){
-            return $param->name;
-        }, (new ReflectionClass($this))->getConstructor()->getParameters());
+        $params = static::getConstructorParams(get_class($this));
 
         $this->hydrate(array_combine($params, $args));
+    }
+
+    protected static function getConstructorParams($class)
+    {
+        if(isset(static::$_classArgs[$class]) == false){
+            static::$_classArgs[$class] = array_map(function($param){
+                return $param->name;
+            }, (new ReflectionClass($class))->getConstructor()->getParameters());
+        }
+
+        return static::$_classArgs[$class];
     }
 
     public function getSchema()
