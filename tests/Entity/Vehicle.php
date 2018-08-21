@@ -2,7 +2,7 @@
 
 namespace PhpSchema\Tests\Entity;
 
-use PhpSchema\SchemaModel;
+use PhpSchema\Models\SchemaModel;
 use PhpSchema\Traits\MethodAccess;
 
 class Vehicle extends SchemaModel

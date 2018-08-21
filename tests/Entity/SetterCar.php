@@ -2,7 +2,7 @@
 
 namespace PhpSchema\Tests\Entity;
 
-use PhpSchema\SchemaModel;
+use PhpSchema\Models\SchemaModel;
 use PhpSchema\Traits\MethodAccessSetterGetter;
 
 class SetterCar extends SchemaModel
