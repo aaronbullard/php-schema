@@ -12,6 +12,16 @@ abstract class Model extends ArrayObject implements Arrayable, Observable
 {
     protected $subscribers = [];
 
+    public function __construct($input, $flags = 0)
+    {
+        parent::__construct($input, $flags);
+        
+        foreach($this as $offset => $value){
+            $this->stopObserving($offset);
+            $this->startObserving($offset);
+        }
+    }
+
     public function offsetSet($offset, $value)
     {
         $offset = $offset ?? count($this);

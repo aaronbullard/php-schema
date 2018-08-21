@@ -18,11 +18,6 @@ abstract class SchemaModel extends Model
 
         parent::__construct($input, ArrayObject::ARRAY_AS_PROPS);
 
-        foreach($this as $offset => $value){
-            $this->stopObserving($offset);
-            $this->startObserving($offset);
-        }
-
         $this->notify();
     }
 
