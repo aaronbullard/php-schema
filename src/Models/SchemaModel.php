@@ -16,16 +16,11 @@ abstract class SchemaModel extends Model implements Arrayable, Observable
 
     protected static $schema;
 
-    protected static $_classArgs = [];
-
     protected $_validator;
 
-    public function __construct(...$args)
+    public function __construct($input)
     {
         $this->_validator = new Validator;
-
-        $params = static::getConstructorParams(get_class($this));
-        $input = array_combine($params, $args);
 
         parent::__construct($input, ArrayObject::ARRAY_AS_PROPS);
 
@@ -35,17 +30,6 @@ abstract class SchemaModel extends Model implements Arrayable, Observable
         }
 
         $this->notify();
-    }
-
-    protected static function getConstructorParams($class)
-    {
-        if(isset(static::$_classArgs[$class]) == false){
-            static::$_classArgs[$class] = array_map(function($param){
-                return $param->name;
-            }, (new ReflectionClass($class))->getConstructor()->getParameters());
-        }
-
-        return static::$_classArgs[$class];
     }
 
     public function getSchema()

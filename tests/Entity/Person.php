@@ -10,6 +10,6 @@ class Person extends PublicPropertiesModel
 
     public function __construct($firstName, $lastName)
     {
-        parent::__construct($firstName, $lastName);
+        parent::__construct(compact('firstName', 'lastName'));
     }
 }

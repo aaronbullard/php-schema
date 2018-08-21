@@ -15,7 +15,7 @@ class Vehicle extends SchemaModel
 
     public function __construct($car_id, $make, $licensePlate)
     {
-        parent::__construct($car_id, $make, $licensePlate);
+        parent::__construct(compact('car_id', 'make', 'licensePlate'));
     }
 
     protected function isGetterMethod(string $method): bool

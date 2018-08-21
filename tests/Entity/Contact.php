@@ -9,6 +9,6 @@ class Contact extends PublicPropertiesModel
     ];
 
     public function __construct($person){
-        parent::__construct($person);
+        parent::__construct(compact('person'));
     }
 }

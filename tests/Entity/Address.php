@@ -10,6 +10,6 @@ class Address extends PublicPropertiesModel
 
     public function __construct($street_1, $street_2 = null, $city, $state, $zipcode)
     {
-        parent::__construct($street_1, $street_2 = null, $city, $state, $zipcode);
+        parent::__construct(compact('street_1', 'street_2', 'city', 'state', 'zipcode'));
     }
 }
