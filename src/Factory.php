@@ -2,8 +2,6 @@
 
 namespace PhpSchema;
 
-use ReflectionClass;
-use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Traits\PublicProperties;
 
 class Factory
@@ -27,13 +25,9 @@ class Factory
             public function __construct($args, $schema)
             {
                 static::$schema = $schema;
+      
                 $this->_validator = new Validator;
                 $this->_attributes = [];
-
-                // Get parameters from constructor
-                $params = array_map(function($param){
-                    return $param->name;
-                }, (new ReflectionClass($this))->getConstructor()->getParameters());
 
                 $this->hydrate($args);
             }

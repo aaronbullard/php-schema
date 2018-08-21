@@ -2,6 +2,7 @@
 
 namespace PhpSchema\Traits;
 
+/* DEPRECATED */
 trait Iterates
 {
     protected $position = 0;
