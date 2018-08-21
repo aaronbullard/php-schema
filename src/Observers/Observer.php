@@ -24,6 +24,16 @@ abstract class Observer extends ArrayObject implements Arrayable, Observable
         }
     }
 
+    protected function getAttribute($key)
+    {
+        return parent::offsetGet($key);
+    }
+
+    protected function setAttribute($key, $value): void
+    {
+        parent::offsetSet($key, $value);
+    }
+
     public function offsetSet($offset, $value)
     {
         $offset = $offset ?? count($this);
@@ -44,16 +54,6 @@ abstract class Observer extends ArrayObject implements Arrayable, Observable
         parent::offsetUnset($offset);
 
         $this->notify();
-    }
-
-    protected function getAttribute($key)
-    {
-        return parent::offsetGet($key);
-    }
-
-    protected function setAttribute($key, $value): void
-    {
-        parent::offsetSet($key, $value);
     }
 
     public function toArray(): array
