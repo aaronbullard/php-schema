@@ -12,6 +12,18 @@ abstract class Observer extends ArrayObject implements Arrayable, Observable
 {
     use Observing, ConvertsType;
 
+    public function __construct($input, Observable $subscriber)
+    {
+        $this->addSubscriber($subscriber);
+
+        parent::__construct($input);
+
+        foreach($this as $offset => $value){
+            $this->stopObserving($offset);
+            $this->startObserving($offset);
+        }
+    }
+
     public function offsetSet($offset, $value)
     {
         $offset = $offset ?? count($this);

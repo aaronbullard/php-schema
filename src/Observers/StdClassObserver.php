@@ -9,13 +9,8 @@ class StdClassObserver extends Observer
 {
     public function __construct(StdClass $obj, Observable $subscriber)
     {
-        $this->addSubscriber($subscriber);
+        $this->setFlags(ArrayObject::ARRAY_AS_PROPS);
 
-        parent::__construct($obj, ArrayObject::ARRAY_AS_PROPS);
-
-        foreach($this as $offset => $value){
-            $this->stopObserving($offset);
-            $this->startObserving($offset);
-        }
+        parent::__construct($obj, $subscriber);
     }
 }
