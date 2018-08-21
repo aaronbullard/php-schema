@@ -1,15 +1,14 @@
 <?php
 
-namespace PhpSchema\Tests\Traits;
+namespace PhpSchema\Tests\Models;
 
 use PhpSchema\Tests\TestCase;
 use PhpSchema\Tests\Entity\Person;
 use PhpSchema\Tests\Entity\Address;
 use PhpSchema\ValidationException;
 
-class PublicPropertiesTest extends TestCase
+class PublicAccessTest extends TestCase
 {
-   
     /** @test */
     public function it_sets_and_gets_public_properties()
     {

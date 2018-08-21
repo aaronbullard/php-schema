@@ -1,7 +1,8 @@
 <?php
 
-namespace PhpSchema\Tests;
+namespace PhpSchema\Tests\Models;
 
+use PhpSchema\Tests\TestCase;
 use PhpSchema\Factory;
 use PhpSchema\Tests\Entity\Car;
 use PhpSchema\Tests\Entity\Person;

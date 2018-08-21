@@ -2,18 +2,12 @@
 
 namespace PhpSchema\Models;
 
-use ArrayObject, ReflectionClass;
+use ArrayObject;
 use PhpSchema\Validator;
-use PhpSchema\Traits\Observing;
-use PhpSchema\Traits\ConvertsType;
-use PhpSchema\Contracts\Arrayable;
-use PhpSchema\Contracts\Observable;
 use PhpSchema\ValidationException;
 
-abstract class SchemaModel extends Model implements Arrayable, Observable
+abstract class SchemaModel extends Model
 {
-    use Observing, ConvertsType;
-
     protected static $schema;
 
     protected $_validator;
@@ -41,9 +35,7 @@ abstract class SchemaModel extends Model implements Arrayable, Observable
     {
         $this->validate();
 
-        \array_walk($this->subscribers, function($sub) use ($payload){
-            $sub->notify($payload);
-        });
+        parent::notify($payload);
     }
 
     public function validate(): void
