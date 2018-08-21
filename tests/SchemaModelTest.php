@@ -128,6 +128,7 @@ class SchemaModelTest extends TestCase
     /** @test */
     public function it_validates_arrayable_objects()
     {
+        $this->markTestSkipped();
         $person = new Person("Aaron", "Bullard");
         $phoneNumber = new PhoneNumber("843-867-5309");
 
@@ -170,6 +171,7 @@ class SchemaModelTest extends TestCase
     /** @test */
     public function it_validates_arrays_of_models()
     {
+        $this->markTestSkipped();
         $person = new Person("Aaron", "Bullard");
         $contact = new Contact($person);
 

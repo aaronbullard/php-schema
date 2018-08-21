@@ -22,7 +22,7 @@ class ObserverFactory
             $value->addSubscriber($subscriber);
             return $value;
         }
- 
+
         throw new \InvalidArgumentException("$value is not observable");
     }
 

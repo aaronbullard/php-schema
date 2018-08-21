@@ -8,7 +8,11 @@ use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Traits\PublicProperties;
 use PhpSchema\Observers\ObserverFactory;
 
-abstract class SchemaModel extends Model implements Arrayable
+abstract class SchemaModel extends \PhpSchema\Models\SchemaModel implements Arrayable
+{
+}
+
+abstract class SchemaModelOLD extends Model implements Arrayable
 {
     use ConvertsType;
 

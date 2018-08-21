@@ -2,6 +2,7 @@
 
 namespace PhpSchema\Traits;
 
+use PhpSchema\ValidationException;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\Observers\ObserverFactory;
 
@@ -40,6 +41,11 @@ trait Observing
 
         if(ObserverFactory::isObservable($value)){
             $value = ObserverFactory::create($value, $this);
+        } else {
+            // Some unknown object
+            if(is_object($value)){
+                throw ValidationException::ARRAYABLE();
+            }
         }
 
         $this->setAttribute($key, $value);
