@@ -62,12 +62,12 @@ class SchemaModelTest extends TestCase
         $person = new Person("Aaron", "Bullard");
         $person->phoneNumber = (object)[
             'name' => '1',
-            'children' => [
+            'children' => (object)[
                 ['name' => '1.1'],
                 ['name' => '1.2'],
                 [
                     'name' => '1.3',
-                    'child' => ['name' => '1.3.1']
+                    'child' => (object)['name' => '1.3.1']
                 ]
             ]
         ];
@@ -245,8 +245,8 @@ class SchemaModelTest extends TestCase
     {
         $person = new Person("Aaron", "Bullard");
         $address = (new Address("123 Walker Rd", null, "Charleston", "SC", "29464"))->toObject();
-
         $person->address = $address;
+
         $address = $person->address;
         $this->assertInstanceOf(Observable::class, $address);
 
@@ -271,6 +271,7 @@ class SchemaModelTest extends TestCase
             ];
             $obj->firstName = 'a';
             $obj->firstName = 'b';
+            unset($obj);
         }
         $dto = microtime(true);
 
@@ -278,6 +279,7 @@ class SchemaModelTest extends TestCase
             $obj = new Person("Aaron", "Bullard");
             $obj->firstName = 'a';
             $obj->firstName = 'b';
+            unset($obj);
         }
         $model = microtime(true);
 

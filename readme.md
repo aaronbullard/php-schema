@@ -61,7 +61,7 @@ class Person extends Model
     // the instance is in a valid state.  Parameter names must match the schema.
     public function __construct($firstName, $lastName)
     {
-        parent::__construct($firstName, $lastName);
+        parent::__construct(compact('firstName', 'lastName'));
     }
 }
 
