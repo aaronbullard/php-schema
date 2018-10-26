@@ -1,5 +1,6 @@
 # PhpSchema
 Self validating PHP objects from JSON Schema
+[![Maintainability](https://api.codeclimate.com/v1/badges/1f20be630457fe6b3c57/maintainability)](https://codeclimate.com/github/aaronbullard/php-schema/maintainability)
 
 ## Installation
 

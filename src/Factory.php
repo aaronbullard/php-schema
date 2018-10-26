@@ -2,7 +2,6 @@
 
 namespace PhpSchema;
 
-use ArrayObject;
 use PhpSchema\Models\SchemaModel;
 
 class Factory
