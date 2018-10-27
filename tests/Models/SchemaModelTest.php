@@ -62,7 +62,7 @@ class SchemaModelTest extends TestCase
         $person = new Person("Aaron", "Bullard");
         $person->phoneNumber = (object)[
             'name' => '1',
-            'children' => (object)[
+            'children' => [
                 ['name' => '1.1'],
                 ['name' => '1.2'],
                 [
