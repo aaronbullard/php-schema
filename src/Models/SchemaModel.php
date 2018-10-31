@@ -35,8 +35,10 @@ abstract class SchemaModel extends Model
 
     public function validate(): void
     {
+        $obj = $this->toObject();
+
         $this->_validator->validate(
-           $this->toObject(), 
+           $obj, 
            $this->getSchema()
         );
 
