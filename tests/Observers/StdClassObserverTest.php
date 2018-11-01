@@ -45,7 +45,7 @@ class StdClassObserverTest extends TestCase
         unset($obs->child->child); // two times
         $grandchild->name = "Aaron"; // no validation runs
 
-        $this->assertEquals(null, $obs->child->child);
+        $this->assertUndefinedIndex($obs->child, 'child');
     }
 
     /** @test */

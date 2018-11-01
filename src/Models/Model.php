@@ -27,7 +27,7 @@ abstract class Model extends ArrayObject implements Arrayable, Observable
         $offset = $offset ?? count($this);
 
         $this->stopObserving($offset);
-
+        
         parent::offsetSet($offset, $value);
 
         $this->startObserving($offset);
@@ -47,7 +47,7 @@ abstract class Model extends ArrayObject implements Arrayable, Observable
     protected function startObserving($key)
     {
         $value = parent::offsetGet($key);
-
+        
         if(ObserverFactory::isObservable($value)){
             $value = ObserverFactory::create($value, $this);
         } else {
@@ -62,6 +62,10 @@ abstract class Model extends ArrayObject implements Arrayable, Observable
 
     protected function stopObserving($key)
     {
+        if(! parent::offsetExists($key)){
+            return;
+        }
+
         $value = parent::offsetGet($key);
 
         if($value instanceof Observable){

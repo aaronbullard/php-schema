@@ -251,7 +251,7 @@ class SchemaModelTest extends TestCase
         $this->assertInstanceOf(Observable::class, $address);
 
         unset($person->address);
-        $this->assertEquals(null, $person->address);
+        $this->assertUndefinedIndex($person, 'address');
 
         // Ensure no validation error is thrown, no longer observing
         $address->state = "South Carolina";
