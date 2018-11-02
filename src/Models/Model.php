@@ -9,47 +9,55 @@ use PhpSchema\Observers\ObserverFactory;
 use PhpSchema\Traits\PreventDynamicProperties;
 use PhpSchema\ValidationException;
 
-abstract class Model extends ArrayObject implements Arrayable, Observable
+abstract class Model implements Arrayable, Observable
 {
-    use PreventDynamicProperties;
+    protected $container = [];
 
     protected $subscribers = [];
 
-    public function __construct($input, $flags = 0)
+
+    public function __construct(array $input)
     {
-        parent::__construct($input, $flags);
-        
-        foreach($this as $offset => $value){
+        foreach($input as $offset => $value){
             $this->stopObserving($offset);
+            $this->container[$offset] = $value;
             $this->startObserving($offset);
         }
     }
 
-    public function offsetSet($offset, $value)
+    protected function containerOffsetExists($offset)
     {
-        $offset = $offset ?? count($this);
+        return array_key_exists($offset, $this->container);
+    }
 
+    protected function containerGet($offset)
+    {
+        return $this->container[$offset];
+    }
+
+    protected function containerSet($offset, $value)
+    {
         $this->stopObserving($offset);
         
-        parent::offsetSet($offset, $value);
+        $this->container[$offset] = $value;
 
         $this->startObserving($offset);
         
         $this->notify();
     }
 
-    public function offsetUnset($offset)
+    protected function containerUnset($offset)
     {
         $this->stopObserving($offset);
 
-        parent::offsetUnset($offset);
+        unset($this->container[$offset]);
 
         $this->notify();
     }
 
     protected function startObserving($key)
     {
-        $value = parent::offsetGet($key);
+        $value = $this->containerGet($key);
         
         if(ObserverFactory::isObservable($value)){
             $value = ObserverFactory::create($value, $this);
@@ -60,16 +68,16 @@ abstract class Model extends ArrayObject implements Arrayable, Observable
             }
         }
 
-        parent::offsetSet($key, $value);
+        $this->containerSet($key, $value);
     }
 
     protected function stopObserving($key)
     {
-        if(! parent::offsetExists($key)){
+        if(! $this->containerOffsetExists($key)){
             return;
         }
 
-        $value = parent::offsetGet($key);
+        $value = $this->containerGet($key);
 
         if($value instanceof Observable){
             $value->removeSubscriber($this);
@@ -107,7 +115,7 @@ abstract class Model extends ArrayObject implements Arrayable, Observable
             return $value instanceof Arrayable 
                         ? $value->toArray() 
                         : $value;
-        }, $this->getArrayCopy());
+        }, $this->container);
     }
 
     public function toJson(): string

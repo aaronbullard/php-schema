@@ -39,6 +39,27 @@ class SchemaModelTest extends TestCase
     }
 
     /** @test */
+    public function it_prevents_array_access()
+    {
+        $person = new Person("Aaron", "Bullard");
+
+        $this->assertNotEquals($person['firstName'], "Aaron");
+        $this->assertNotEquals($person['lastName'], "Bullard");
+    }
+
+    /** @test */
+    public function it_is_not_iterable()
+    {
+        $person = new Person("Aaron", "Bullard");
+
+        $count = 0;
+        foreach($person as $k => $v){
+            $count++;
+        }
+        $this->assertCount($count, 0);
+    }
+
+    /** @test */
     public function it_validates_on_initialization()
     {
         $this->expectException(ValidationException::class);
