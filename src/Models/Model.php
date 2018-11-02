@@ -6,10 +6,13 @@ use ArrayObject;
 use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\Observers\ObserverFactory;
+use PhpSchema\Traits\PreventDynamicProperties;
 use PhpSchema\ValidationException;
 
 abstract class Model extends ArrayObject implements Arrayable, Observable
 {
+    use PreventDynamicProperties;
+
     protected $subscribers = [];
 
     public function __construct($input, $flags = 0)

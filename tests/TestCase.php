@@ -47,4 +47,17 @@ class TestCase extends PHPUnitTestCase
         }
         $this->assertEquals($count, 1, "TestCase::assertUndefinedIndex failed to throw an error.");
     }
+
+    protected function assertUndefinedProperty($obj, $index)
+    {
+        $count = 0;
+        try {
+            $obj->$index;
+        }catch(\Throwable $e){
+            $msg_parts = explode(' ', $e->getMessage());
+            $this->assertEquals($msg_parts[0], 'Undefined');
+            $count++;
+        }
+        $this->assertEquals($count, 1);
+    }
 }

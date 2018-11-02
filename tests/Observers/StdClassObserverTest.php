@@ -142,4 +142,16 @@ class StdClassObserverTest extends TestCase
         $this->assertEquals("onetwothree", $result);
     }
 
+    /** @test */
+    public function it_prevents_arrayable_access()
+    {
+        $obj = new \StdClass();
+        $obj->one = 'one';
+
+        $obs = new StdClassObserver($obj, $this->createModelMock(0));
+
+        $this->expectException(\PHPUnit\Framework\Error\Warning::class);
+        $obs['one'];
+    }
+
 }

@@ -2,7 +2,6 @@
 
 namespace PhpSchema\Models;
 
-use ArrayObject;
 use PhpSchema\Validator;
 use PhpSchema\ValidationException;
 
@@ -16,7 +15,7 @@ abstract class SchemaModel extends Model
     {
         $this->_validator = new Validator;
 
-        parent::__construct($input, ArrayObject::ARRAY_AS_PROPS);
+        parent::__construct($input, self::ARRAY_AS_PROPS);
 
         $this->notify();
     }
