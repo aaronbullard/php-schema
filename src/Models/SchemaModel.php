@@ -15,7 +15,7 @@ abstract class SchemaModel extends Model
     {
         $this->_validator = new Validator;
 
-        parent::__construct($input, self::ARRAY_AS_PROPS);
+        parent::__construct($input);
 
         $this->notify();
     }

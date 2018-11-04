@@ -68,7 +68,7 @@ abstract class Model implements Arrayable, Observable
             }
         }
 
-        $this->containerSet($key, $value);
+        $this->container[$key] = $value;
     }
 
     protected function stopObserving($key)

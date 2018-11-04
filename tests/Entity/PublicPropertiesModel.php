@@ -7,5 +7,5 @@ use PhpSchema\Traits\PublicProperties;
 
 class PublicPropertiesModel extends SchemaModel
 {
-    // use PublicProperties;
+    use PublicProperties;
 }

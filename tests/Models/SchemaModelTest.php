@@ -43,8 +43,8 @@ class SchemaModelTest extends TestCase
     {
         $person = new Person("Aaron", "Bullard");
 
-        $this->assertNotEquals($person['firstName'], "Aaron");
-        $this->assertNotEquals($person['lastName'], "Bullard");
+        $this->expectException(\Throwable::class);
+        $person['firstName'];
     }
 
     /** @test */
@@ -52,11 +52,8 @@ class SchemaModelTest extends TestCase
     {
         $person = new Person("Aaron", "Bullard");
 
-        $count = 0;
-        foreach($person as $k => $v){
-            $count++;
-        }
-        $this->assertCount($count, 0);
+        $this->assertNotInstanceOf(\Traversable::class, $person);
+        $this->assertNotInstanceOf(\Iterator::class, $person);
     }
 
     /** @test */
@@ -75,6 +72,22 @@ class SchemaModelTest extends TestCase
         $arr = $person->toArray();
 
         $this->assertEquals($arr['firstName'], "Aaron");
+    }
+
+    
+
+    /** @test */
+    public function it_converts_to_a_stdClass()
+    {
+        $person = new Person("Aaron", "Bullard");
+        $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
+        $person->address = $address->toObject();
+
+        $stdClass = $person->toObject();
+
+        $this->assertInstanceOf(\StdClass::class, $stdClass);
+        $this->assertEquals($stdClass->firstName, "Aaron");
+        $this->assertEquals($stdClass->address->city, "Charleston");
     }
 
     /** @test */
@@ -100,20 +113,6 @@ class SchemaModelTest extends TestCase
         $this->assertEquals($arr['phoneNumber']['children'][1]['name'], "1.2");
         $this->assertEquals($arr['phoneNumber']['children'][2]['name'], "1.3");
         $this->assertEquals($arr['phoneNumber']['children'][2]['child']['name'], "1.3.1");
-    }
-
-    /** @test */
-    public function it_converts_to_a_stdClass()
-    {
-        $person = new Person("Aaron", "Bullard");
-        $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
-        $person->address = $address->toObject();
-
-        $stdClass = $person->toObject();
-
-        $this->assertInstanceOf(\StdClass::class, $stdClass);
-        $this->assertEquals($stdClass->firstName, "Aaron");
-        $this->assertEquals($stdClass->address->city, "Charleston");
     }
 
     /** @test */
