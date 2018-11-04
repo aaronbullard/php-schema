@@ -55,6 +55,11 @@ abstract class Model implements Arrayable, Observable
         $this->notify();
     }
 
+    protected function containerKeys()
+    {
+        return array_keys($this->container);
+    }
+
     protected function startObserving($key)
     {
         $value = $this->containerGet($key);
