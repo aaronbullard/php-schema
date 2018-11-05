@@ -2,11 +2,12 @@
 
 namespace PhpSchema\Observers;
 
-use StdClass;
+use Iterator;
+use PhpSchema\Traits\Loopable;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\Traits\PublicProperties;
 
-class StdClassObserver extends Observer
+class StdClassObserver extends Observer implements Iterator
 {
-    use PublicProperties;
+    use PublicProperties, Loopable;
 }

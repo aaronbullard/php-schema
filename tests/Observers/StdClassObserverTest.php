@@ -150,7 +150,7 @@ class StdClassObserverTest extends TestCase
 
         $obs = new StdClassObserver($obj, $this->createModelMock(0));
 
-        $this->expectException(\PHPUnit\Framework\Error\Warning::class);
+        $this->expectException(\Error::class);
         $obs['one'];
     }
 
