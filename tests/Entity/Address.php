@@ -2,8 +2,13 @@
 
 namespace PhpSchema\Tests\Entity;
 
-class Address extends PublicPropertiesModel
+use PhpSchema\Models\SchemaModel;
+use PhpSchema\Traits\PublicProperties;
+
+class Address extends SchemaModel
 {
+    use PublicProperties;
+
     protected static $schema = [
         '$ref' => 'file://' . __DIR__ . '/../Schemas/address.json'
     ];

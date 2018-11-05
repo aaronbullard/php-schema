@@ -6,10 +6,10 @@ use PhpSchema\Tests\TestCase;
 use PhpSchema\Factory;
 use PhpSchema\Tests\Entity\Car;
 use PhpSchema\Tests\Entity\Person;
+use PhpSchema\Tests\Entity\Driver;
 use PhpSchema\Tests\Entity\Contact;
 use PhpSchema\Tests\Entity\Address;
 use PhpSchema\Tests\Entity\PhoneNumber;
-use PhpSchema\Tests\Entity\UnknownClass;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\ValidationException;
 
@@ -57,14 +57,6 @@ class SchemaModelTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_on_initialization()
-    {
-        $this->expectException(ValidationException::class);
-
-        new Address("123 Walker Rd", null, "Charleston", "NOT_A_STATE", "29464");
-    }
-
-    /** @test */
     public function it_converts_to_an_array()
     {
         $person = new Person("Aaron", "Bullard");
@@ -73,8 +65,6 @@ class SchemaModelTest extends TestCase
 
         $this->assertEquals($arr['firstName'], "Aaron");
     }
-
-    
 
     /** @test */
     public function it_converts_to_a_stdClass()
@@ -116,16 +106,14 @@ class SchemaModelTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_nested_objects()
+    public function schemamodel_child_notifies_parent_of_changes()
     {
         $person = new Person("Aaron", "Bullard");
-        $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
+        $driver = new Driver($person);
 
-        $person->address = $address;
+        // Works because each extends Model which is an observable
         $this->expectException(ValidationException::class);
-        $address = $address->toObject();
-        unset($address->state);
-        $person->address = $address;
+        $driver->person->age = 12; // less than requirement of 16
     }
 
     /** @test */
@@ -133,31 +121,19 @@ class SchemaModelTest extends TestCase
     {
         $person = new Person("Aaron", "Bullard");
         $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
+        
+        // Address is now a StdClass object
         $address = $address->toObject();
         $person->address = $address;
-
-        unset($address->state);
-
+    
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage(
             "There are errors in the following properties: address.state"
         );
 
+        // Create an invalid state
+        unset($address->state);
         $person->address = $address;
-    }
-
-    /** @test */
-    public function it_validates_arrayable_objects()
-    {
-        $this->markTestSkipped();
-        $person = new Person("Aaron", "Bullard");
-        $phoneNumber = new PhoneNumber("843-867-5309");
-
-        $person->phoneNumber = $phoneNumber;
-
-        $p = $person->toArray();
-
-        $this->assertEquals($p['phoneNumber']['number'], $phoneNumber->number());
     }
 
     /** @test */
@@ -178,7 +154,6 @@ class SchemaModelTest extends TestCase
     public function it_enforces_arrayable_interface()
     {
         $person = new Person("Aaron", "Bullard");
-        $random = new UnknownClass();
 
          // enforces schema
         $this->expectException(ValidationException::class);
@@ -186,13 +161,21 @@ class SchemaModelTest extends TestCase
             "Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface"
         );
 
-        $person->random = $random;
+        $number = new class('202-867-5309') {
+            public $number;
+
+            function __construct($num){
+                $this->number = $num;
+            }
+        };
+
+        $person->phoneNumber = $number;
     }
 
     /** @test */
     public function it_validates_arrays_of_models()
     {
-        $this->markTestSkipped();
+        // $this->markTestSkipped();
         $person = new Person("Aaron", "Bullard");
         $contact = new Contact($person);
 
@@ -209,71 +192,59 @@ class SchemaModelTest extends TestCase
     }
 
     /** @test */
-    public function it_prevents_embeddable_objects_from_mutating_by_reference()
+    public function it_prevents_embeddable_stdclass_objects_from_mutating_by_reference()
     {
-        $car = new Car(42, "Jeep", "ABC123");
+        $person = new Person("Aaron", "Bullard");
+        $address = (object) [
+            'street_1' => '123 Walker Dr',
+            'city' => 'Charleston',
+            'state' => 'SC',
+            'zipcode' => '29492'
+        ];
 
-        $person = new \stdClass;
-        $person->firstName = "Aaron";
-        $person->lastName = "Bullard";
-        $person->age = 42;
+        // set
+        $person->address = $address;
 
-        $car->driver($person); // person is cloned to prevent outside access
+        // mutate outside the object
+        $address->state = 'NJ';
 
-        $person->age = "forty-two";
-        $this->assertEquals(42, $car->toArray()['driver']['age']);
+        $this->assertEquals($person->address->state, "SC");
     }
 
     /** @test */
     public function it_validates_embeddables_when_they_mutate()
     {
-        $car = new Car(42, "Jeep", "ABC123");
-
-        $person = new \stdClass;
-        $person->firstName = "Aaron";
-        $person->lastName = "Bullard";
-        $person->age = 42;
-
-        $car->driver($person);
-
-        $this->expectException(ValidationException::class);
-        $car->driver()->age = "forty-two";
-    }
-
-    /** @test */
-    public function it_validates_across_the_graph()
-    {
-        // person->address doesn't allow additional properties
         $person = new Person("Aaron", "Bullard");
-
-        $person->address = Factory::createDTO([
-            'type' => 'object'
-        ], [
-            "street_1" => "123 Walker Rd",
-            "city" => "Charleston",
-            "state" => "SC",
-            "zipcode" => "28412"
-        ]);
+        $person->address = (object) [
+            'street_1' => '123 Walker Dr',
+            'city' => 'Charleston',
+            'state' => 'SC',
+            'zipcode' => '29492'
+        ];
 
         $this->expectException(ValidationException::class);
-
-        $person->address->country = "US";
+        $person->address->state = 'South Carolina';
     }
 
     /** @test */
     public function it_stops_observing_orphaned_objects()
     {
         $person = new Person("Aaron", "Bullard");
-        $address = (new Address("123 Walker Rd", null, "Charleston", "SC", "29464"))->toObject();
-        $person->address = $address;
+        $person->address = (object) [
+            'street_1' => '123 Walker Dr',
+            'city' => 'Charleston',
+            'state' => 'SC',
+            'zipcode' => '29492'
+        ];
 
         $address = $person->address;
         $this->assertInstanceOf(Observable::class, $address);
 
         unset($person->address);
-        $this->assertUndefinedIndex($person, 'address');
+        $this->assertFalse(isset($person->address));
 
         // Ensure no validation error is thrown, no longer observing
+        $this->assertInstanceOf(Observable::class, $address);
         $address->state = "South Carolina";
     }
 

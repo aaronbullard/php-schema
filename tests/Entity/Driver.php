@@ -5,15 +5,15 @@ namespace PhpSchema\Tests\Entity;
 use PhpSchema\Models\SchemaModel;
 use PhpSchema\Traits\PublicProperties;
 
-class Contact extends SchemaModel
+class Driver extends SchemaModel
 {
     use PublicProperties;
     
     protected static $schema = [
-        '$ref' => 'file://' . __DIR__ . '/../Schemas/contact.json'
+        '$ref' => 'file://' . __DIR__ . '/../Schemas/driver.json'
     ];
 
-    public function __construct($person)
+    public function __construct(Person $person)
     {
         parent::__construct(compact('person'));
     }
