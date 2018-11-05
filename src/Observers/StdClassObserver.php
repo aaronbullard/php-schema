@@ -4,15 +4,9 @@ namespace PhpSchema\Observers;
 
 use StdClass;
 use PhpSchema\Contracts\Observable;
-use PhpSchema\Traits\PrivateProperties;
+use PhpSchema\Traits\PublicProperties;
 
 class StdClassObserver extends Observer
 {
-    // use PrivateProperties;
-
-    public function __construct(StdClass $obj, Observable $subscriber)
-    {
-        parent::__construct($obj, $subscriber);
-        $this->setFlags(self::ARRAY_AS_PROPS);
-    }
+    use PublicProperties;
 }

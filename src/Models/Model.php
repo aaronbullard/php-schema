@@ -16,7 +16,7 @@ abstract class Model implements Arrayable, Observable
     protected $subscribers = [];
 
 
-    public function __construct(array $input)
+    public function __construct($input)
     {
         foreach($input as $offset => $value){
             $this->stopObserving($offset);

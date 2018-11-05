@@ -112,7 +112,7 @@ class ArrayObserverTest extends TestCase
             'firstName' => "Aaron"
         ], $this->createModelMock(0));
 
-        $this->expectException(\PHPUnit\Framework\Error\Warning::class);
+        $this->expectException(\PHPUnit\Framework\Error\Notice::class);
         $obs->firstName;
     }
 

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Must implement ArrayAccess interface
+ */
 namespace PhpSchema\Traits;
 
 trait ArrayAccessible

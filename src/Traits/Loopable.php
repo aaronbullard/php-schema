@@ -2,6 +2,9 @@
 
 namespace PhpSchema\Traits;
 
+/**
+ * Must implement Iterator interface
+ */
 trait Loopable
 {
     protected $position = 0;

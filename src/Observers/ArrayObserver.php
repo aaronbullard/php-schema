@@ -2,12 +2,18 @@
 
 namespace PhpSchema\Observers;
 
+use ArrayAccess, Countable, Iterator;
+use PhpSchema\Traits\Loopable;
 use PhpSchema\Contracts\Observable;
+use PhpSchema\Traits\ArrayAccessible;
 
-class ArrayObserver extends Observer
+
+class ArrayObserver extends Observer implements ArrayAccess, Countable, Iterator
 {
-    public function __construct($input, Observable $subscriber)
+    use ArrayAccessible, Loopable;
+
+    public function count()
     {
-        parent::__construct($input, $subscriber);
+        return count($this->container);
     }
 }
