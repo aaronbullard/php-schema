@@ -3,6 +3,7 @@
 namespace PhpSchema;
 
 use PhpSchema\Models\SchemaModel;
+use PhpSchema\Traits\PublicProperties;
 
 class Factory
 {
@@ -18,6 +19,8 @@ class Factory
     {
         return new class($args, $schema) extends SchemaModel
         {
+            use PublicProperties;
+            
             protected static $schema;
 
             public function __construct($args, $schema)
