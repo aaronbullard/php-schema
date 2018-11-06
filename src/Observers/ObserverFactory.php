@@ -9,16 +9,16 @@ class ObserverFactory
 {
     public static function create($value, Observable $subscriber)
     {
-        if($value instanceof StdClass){
+        if ($value instanceof StdClass) {
             $value = clone $value;
             return new StdClassObserver($value, $subscriber);
         }
 
-        if(is_array($value)){
+        if (is_array($value)) {
             return new ArrayObserver($value, $subscriber);
         }
 
-        if($value instanceof Observable){
+        if ($value instanceof Observable) {
             $value->addSubscriber($subscriber);
             return $value;
         }

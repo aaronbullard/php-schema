@@ -9,15 +9,15 @@ trait MethodAccess
 {
     public function __call($method, $args)
     {
-        if($this->isGetterMethod($method) && empty($args)){
+        if ($this->isGetterMethod($method) && empty($args)) {
             $key = $this->getMethodToAttributeTransformer($method);
             
             return $this->containerGet($key);
         } 
         
-        if($this->isSetterMethod($method)) {
+        if ($this->isSetterMethod($method)) {
             // No arguments passed to setter
-            if(count($args) === 0){
+            if (count($args) === 0) {
                 throw new ArgumentCountError("Too few arguments to function ".
                     __CLASS__."::$method(), ".count($args).
                     " passed in and exactly 1 expected");
