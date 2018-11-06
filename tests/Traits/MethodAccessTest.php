@@ -20,6 +20,14 @@ class MethodAccessTest extends TestCase
     }
 
     /** @test */
+    public function it_gets_unset_properties()
+    {
+        $this->markTestSkipped();
+        $car = new Car(42, "Jeep", "ABC123");
+        $this->assertEquals($car->color(), null);
+    }
+
+    /** @test */
     public function it_creates_a_setter()
     {
         $car = new Car(42, "Jeep", "ABC123");
@@ -33,10 +41,10 @@ class MethodAccessTest extends TestCase
     {
         $car = new Car(42, "Jeep", "ABC123");
         $car->make("BMW")
-            ->licensPlate("DEF456");
+            ->licensePlate("DEF456");
 
         $this->assertEquals($car->make(), "BMW");
-        $this->assertEquals($car->licensPlate(), "DEF456");
+        $this->assertEquals($car->licensePlate(), "DEF456");
     }
 
     /** @test */

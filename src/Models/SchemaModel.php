@@ -32,6 +32,12 @@ abstract class SchemaModel extends Model
         parent::notify($payload);
     }
 
+    /**
+     * Validate the instance
+     *
+     * @throws ValidationException
+     * @return void
+     */
     public function validate(): void
     {
         $obj = $this->toObject();

@@ -6,5 +6,5 @@ use JsonSchema\Validator as JsonSchemaValidator;
 
 class Validator extends JsonSchemaValidator
 {
-    
+ 
 }
