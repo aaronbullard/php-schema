@@ -9,11 +9,11 @@ abstract class SchemaModel extends Model
 {
     protected static $schema;
 
-    protected $_validator;
+    protected $validator;
 
     public function __construct($input)
     {
-        $this->_validator = new Validator;
+        $this->validator = new Validator;
 
         parent::__construct($input);
 
@@ -36,16 +36,12 @@ abstract class SchemaModel extends Model
     {
         $obj = $this->toObject();
 
-        $this->_validator->validate(
-           $obj, 
-           $this->getSchema()
-        );
+        $this->validator->validate($obj, $this->getSchema());
 
-        if($this->_validator->isValid() == false){
+        if($this->validator->isValid() === false) {
             throw ValidationException::withErrors(
-                $this->_validator->getErrors()
+                $this->validator->getErrors()
             );
         }
     }
-
 }

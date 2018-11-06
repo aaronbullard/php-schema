@@ -17,13 +17,13 @@ class Factory
      */
     public static function createDTO($schema, array $args = []): object
     {
-        return new class($args, $schema) extends SchemaModel
+        return new class($schema, $args) extends SchemaModel
         {
             use PublicProperties;
             
             protected static $schema;
 
-            public function __construct($args, $schema)
+            public function __construct($schema, $args)
             {
                 static::$schema = $schema;
                 parent::__construct($args);

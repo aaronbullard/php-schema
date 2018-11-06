@@ -18,7 +18,7 @@ abstract class Model implements Arrayable, Observable
 
     public function __construct($input)
     {
-        foreach($input as $offset => $value){
+        foreach ($input as $offset => $value) {
             $this->stopObserving($offset);
             $this->container[$offset] = $value;
             $this->startObserving($offset);
@@ -64,13 +64,13 @@ abstract class Model implements Arrayable, Observable
     {
         $value = $this->containerGet($key);
         
-        if(ObserverFactory::isObservable($value)){
+        if (ObserverFactory::isObservable($value)) {
             $value = ObserverFactory::create($value, $this);
-        } else {
-            // Some unknown object
-            if(is_object($value) && !($value instanceof Arrayable)){
-                throw ValidationException::ARRAYABLE();
-            }
+        }
+
+        // Some unknown object
+        if (is_object($value) && !($value instanceof Arrayable)) {
+            throw ValidationException::ARRAYABLE();
         }
 
         $this->container[$key] = $value;
@@ -78,13 +78,13 @@ abstract class Model implements Arrayable, Observable
 
     protected function stopObserving($key): void
     {
-        if(! $this->containerOffsetExists($key)){
+        if (! $this->containerOffsetExists($key)) {
             return;
         }
 
         $value = $this->containerGet($key);
 
-        if($value instanceof Observable){
+        if ($value instanceof Observable) {
             $value->removeSubscriber($this);
         }
     }
@@ -100,25 +100,25 @@ abstract class Model implements Arrayable, Observable
 
     public function removeSubscriber(Observable $sub): Observable
     {
-        $id = spl_object_hash($sub);
+        $key = spl_object_hash($sub);
 
-        unset($this->subscribers[$id]);
+        unset($this->subscribers[$key]);
 
         return $this;
     }
 
     public function notify($payload = null): void
     {
-        \array_walk($this->subscribers, function($sub) use ($payload){
+        \array_walk($this->subscribers, function ($sub) use ($payload) {
             $sub->notify($payload);
         });
     }
 
     public function toArray(): array
     {
-        return array_map(function($value){
-            return $value instanceof Arrayable 
-                        ? $value->toArray() 
+        return array_map(function ($value) {
+            return $value instanceof Arrayable
+                        ? $value->toArray()
                         : $value;
         }, $this->container);
     }
