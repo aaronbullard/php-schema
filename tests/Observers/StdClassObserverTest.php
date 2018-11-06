@@ -13,24 +13,23 @@ class StdClassObserverTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->obj = json_decode(json_encode([
+        $this->obj = (object)[
             'name' => 'Don',
-            'child' => [
+            'child' => (object)[
                 'name' => 'Lynn',
-                'child' => [
+                'child' => (object)[
                     'name' => 'Aaron'
                 ]
             ]
-        ]), false);
+        ];
     }
 
     /** @test */
     public function it_validates_on_set()
     {
         $obs = new StdClassObserver($this->obj, $this->createModelMock(1));
-        $this->assertEquals('Don', $obs->name);
-        
-        $obs->name = 'JD';
+
+        $obs->name = 'JD'; // one validation
         $this->assertEquals('JD', $obs->name);
     }
 
@@ -42,10 +41,10 @@ class StdClassObserverTest extends TestCase
         $grandchild = $obs->child->child;
         $grandchild->name = "A-A-ron"; // one validation
 
-        unset($obs->child->child); // two times
+        unset($obs->child->child); // two times, validates after unset
         $grandchild->name = "Aaron"; // no validation runs
 
-        $this->assertUndefinedIndex($obs->child, 'child');
+        $this->assertFalse(isset($obs->child->child));
     }
 
     /** @test */
@@ -62,30 +61,14 @@ class StdClassObserverTest extends TestCase
         $this->assertEquals("Bob", $obs->child->child->name);
     }
 
-    /** @skip */
-    // public function it_validates_after_method_call()
-    // {
-    //     $obj = new class() implements Arrayable {
-    //         public function getArgs($one, $two, $three) { return compact('one', 'two', 'three'); }
-    //         public function toArray (): array { return []; }
-    //     };
-
-    //     $obs = new StdClassObserver($obj, $this->createModelMock(3));
-
-    //     $this->assertEquals(0, $obs->getArgs(0, 1, 2)['one']);
-    //     $this->assertEquals(1, $obs->getArgs(0, 1, 2)['two']);
-    //     $this->assertEquals(2, $obs->getArgs(0, 1, 2)['three']);
-    // }
-
     /** @test */
     public function it_watches_embedded_objects()
     {
         $obs = new StdClassObserver($this->obj, $this->createModelMock(1));
-        
         $this->assertInstanceOf(StdClassObserver::class, $obs->child->child);
         $this->assertEquals('Aaron', $obs->child->child->name);
 
-        $obs->child->child->name = 'James';
+        $obs->child->child->name = 'James'; // one validation
         $this->assertEquals('James', $obs->child->child->name);
     }
 
@@ -96,7 +79,7 @@ class StdClassObserverTest extends TestCase
 
         $newChild = (object)['name' => 'Test'];
 
-        $obs->child->child = $newChild;
+        $obs->child->child = $newChild; // one validation, $newChild is cloned
 
         $newChild->name = 'Changed';
 
@@ -113,7 +96,7 @@ class StdClassObserverTest extends TestCase
         $obs = new StdClassObserver($this->obj, $parent1);
         $obs->addSubscriber($parent2);
 
-        $obs->child->child->name = 'James';
+        $obs->child->child->name = 'James'; // one AND two validations
         $this->assertEquals('James', $obs->child->child->name);
     }
 
@@ -145,13 +128,9 @@ class StdClassObserverTest extends TestCase
     /** @test */
     public function it_prevents_arrayable_access()
     {
-        $obj = new \StdClass();
-        $obj->one = 'one';
-
-        $obs = new StdClassObserver($obj, $this->createModelMock(0));
+        $obs = new StdClassObserver($this->obj, $this->createModelMock(0));
 
         $this->expectException(\Error::class);
-        $obs['one'];
+        $obs['name'];
     }
-
 }

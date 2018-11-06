@@ -4,14 +4,13 @@ namespace PhpSchema\Tests\Models;
 
 use PhpSchema\Tests\TestCase;
 use PhpSchema\Factory;
-use PhpSchema\Tests\Entity\Car;
+use PhpSchema\ValidationException;
+use PhpSchema\Contracts\Observable;
 use PhpSchema\Tests\Entity\Person;
 use PhpSchema\Tests\Entity\Driver;
 use PhpSchema\Tests\Entity\Contact;
 use PhpSchema\Tests\Entity\Address;
 use PhpSchema\Tests\Entity\PhoneNumber;
-use PhpSchema\Contracts\Observable;
-use PhpSchema\ValidationException;
 
 class SchemaModelTest extends TestCase
 {
@@ -173,15 +172,25 @@ class SchemaModelTest extends TestCase
     }
 
     /** @test */
+    public function it_accepts_objects_with_an_arrayable_interface()
+    {
+        $person = new Person("Aaron", "Bullard");
+        $contact = new Contact($person);
+        $contact->phoneNumbers = [];
+        $contact->phoneNumbers[] = new PhoneNumber('202-867-5309');
+        
+        $this->assertEquals($contact->toArray()['phoneNumbers'][0]['number'], '202-867-5309');
+    }
+
+    /** @test */
     public function it_validates_arrays_of_models()
     {
-        // $this->markTestSkipped();
         $person = new Person("Aaron", "Bullard");
         $contact = new Contact($person);
 
         $contact->phoneNumbers = [];
-        $contact->phoneNumbers[] = new PhoneNumber("1");
-        $contact->phoneNumbers[] = new PhoneNumber("2");
+        $contact->phoneNumbers[] = (object)['number' => '202-867-5309'];
+        $contact->phoneNumbers[] = (object)['number' => '843-867-5309'];
 
         $this->assertCount(2, $contact->phoneNumbers);
         $this->expectException(ValidationException::class);

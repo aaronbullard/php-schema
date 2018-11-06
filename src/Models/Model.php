@@ -68,7 +68,7 @@ abstract class Model implements Arrayable, Observable
             $value = ObserverFactory::create($value, $this);
         } else {
             // Some unknown object
-            if(is_object($value)){
+            if(is_object($value) && !($value instanceof Arrayable)){
                 throw ValidationException::ARRAYABLE();
             }
         }

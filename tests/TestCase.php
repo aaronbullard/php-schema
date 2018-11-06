@@ -24,40 +24,17 @@ class TestCase extends PHPUnitTestCase
         }
     }
 
-    protected function createModelMock($numOfValidations = 1)
+    /**
+     * This mock asserts that notify will be called a certain number of times.
+     *
+     * @param integer $numOfValidations
+     * @return Observable
+     */
+    protected function createModelMock($numOfValidations = 1): Observable
     {
         $val = Mockery::mock(Observable::class);
         $val->shouldReceive('notify')->times($numOfValidations);
 
         return $val;
-    }
-
-    protected function assertUndefinedIndex($obj, $index)
-    {
-        $count = 0;
-        try {
-            $obj->$index;
-        }catch(\Throwable $e){
-            $msg_parts = explode(' ', $e->getMessage());
-            $testMsg = "Error message was not 'Undefined index: " . $index . "'.";
-            $this->assertEquals($msg_parts[0], 'Undefined', $testMsg);
-            $this->assertEquals($msg_parts[1], 'index:', $testMsg);
-            $this->assertEquals($msg_parts[2], $index, $testMsg);
-            $count++;
-        }
-        $this->assertEquals($count, 1, "TestCase::assertUndefinedIndex failed to throw an error.");
-    }
-
-    protected function assertUndefinedProperty($obj, $index)
-    {
-        $count = 0;
-        try {
-            $obj->$index;
-        }catch(\Throwable $e){
-            $msg_parts = explode(' ', $e->getMessage());
-            $this->assertEquals($msg_parts[0], 'Undefined');
-            $count++;
-        }
-        $this->assertEquals($count, 1);
     }
 }

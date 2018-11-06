@@ -53,5 +53,4 @@ class ArrayAccessibleTest extends TestCase
         $person['age'] = 42;
         $this->assertTrue(isset($person['age']));
     }
-
 }

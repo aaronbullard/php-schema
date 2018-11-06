@@ -28,7 +28,6 @@ class LoopableTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-
         $this->looper = new Looper("Aaron", "Bullard");
     }
 
