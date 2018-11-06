@@ -8,7 +8,7 @@ class ValidationException extends \InvalidArgumentException
 
     protected $errors;
 
-    public static function withErrors(array $errors)
+    public static function withErrors(array $errors): ValidationException
     {
         $properties = array_map(function($error) {
             return $error['property'] == null ? 'unknown': $error['property'];
@@ -23,12 +23,12 @@ class ValidationException extends \InvalidArgumentException
         return $self;
     }
 
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
-    public static function ARRAYABLE()
+    public static function ARRAYABLE(): ValidationException
     {
         return new static(static::ARRAYABLE);
     }

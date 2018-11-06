@@ -25,7 +25,7 @@ abstract class Model implements Arrayable, Observable
         }
     }
 
-    protected function containerOffsetExists($offset)
+    protected function containerOffsetExists($offset): bool
     {
         return array_key_exists($offset, $this->container);
     }
@@ -35,7 +35,7 @@ abstract class Model implements Arrayable, Observable
         return $this->container[$offset];
     }
 
-    protected function containerSet($offset, $value)
+    protected function containerSet($offset, $value): void
     {
         $this->stopObserving($offset);
         
@@ -46,7 +46,7 @@ abstract class Model implements Arrayable, Observable
         $this->notify();
     }
 
-    protected function containerUnset($offset)
+    protected function containerUnset($offset): void
     {
         $this->stopObserving($offset);
 
@@ -60,7 +60,7 @@ abstract class Model implements Arrayable, Observable
         return array_keys($this->container);
     }
 
-    protected function startObserving($key)
+    protected function startObserving($key): void
     {
         $value = $this->containerGet($key);
         
@@ -76,7 +76,7 @@ abstract class Model implements Arrayable, Observable
         $this->container[$key] = $value;
     }
 
-    protected function stopObserving($key)
+    protected function stopObserving($key): void
     {
         if(! $this->containerOffsetExists($key)){
             return;

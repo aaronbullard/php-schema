@@ -17,4 +17,11 @@ class Person extends SchemaModel
     {
         parent::__construct(compact('firstName', 'lastName'));
     }
+
+    public function changeFirstName($name)
+    {
+        $this->firstName = $name;
+        
+        return $this;
+    }
 }

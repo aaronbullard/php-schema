@@ -14,8 +14,10 @@ class PublicPropertiesTest extends TestCase
     {
         $person = new Person("Aaron", "Bullard");
         $person->age = 42;
+        $person->changeFirstName('Bob');
 
         $this->assertEquals($person->age, 42);
+        $this->assertEquals($person->firstName, 'Bob');
     }
 
     /** @test */

@@ -15,7 +15,7 @@ class Factory
      * @param array $args
      * @return object Anonymous Class
      */
-    public static function createDTO($schema, array $args = [])
+    public static function createDTO($schema, array $args = []): object
     {
         return new class($args, $schema) extends SchemaModel
         {

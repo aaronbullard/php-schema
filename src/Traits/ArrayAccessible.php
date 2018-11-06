@@ -7,7 +7,7 @@ namespace PhpSchema\Traits;
 
 trait ArrayAccessible
 {
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->containerOffsetExists($offset);
     }
