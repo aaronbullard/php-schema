@@ -4,11 +4,10 @@ namespace PhpSchema\Tests\Entity;
 
 use PhpSchema\Models\SchemaModel;
 use PhpSchema\Traits\MethodAccess;
-use PhpSchema\Traits\PrivateProperties;
 
 class Car extends SchemaModel
 {
-    use MethodAccess, PrivateProperties;
+    use MethodAccess;
     
     protected static $schema = [
         '$ref' => 'file://' . __DIR__ . '/../Schemas/car.json'

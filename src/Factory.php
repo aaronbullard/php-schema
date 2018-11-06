@@ -3,6 +3,7 @@
 namespace PhpSchema;
 
 use PhpSchema\Models\SchemaModel;
+use PhpSchema\Traits\PublicProperties;
 
 class Factory
 {
@@ -14,10 +15,12 @@ class Factory
      * @param array $args
      * @return object Anonymous Class
      */
-    public static function createDTO($schema, array $args = [])
+    public static function createDTO($schema, array $args = []): object
     {
         return new class($args, $schema) extends SchemaModel
         {
+            use PublicProperties;
+            
             protected static $schema;
 
             public function __construct($args, $schema)

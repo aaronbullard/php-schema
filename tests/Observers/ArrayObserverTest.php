@@ -105,4 +105,15 @@ class ArrayObserverTest extends TestCase
         $this->assertEquals("2", $arr['array'][1]);
     }
 
+    /** @test */
+    public function it_prevents_access_as_props()
+    {
+        $obs = new ArrayObserver([
+            'firstName' => "Aaron"
+        ], $this->createModelMock(0));
+
+        $this->expectException(\PHPUnit\Framework\Error\Notice::class);
+        $obs->firstName;
+    }
+
 }

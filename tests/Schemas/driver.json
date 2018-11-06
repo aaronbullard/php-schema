@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "properties": {
+        "person": {
+            "type": "object",
+            "properties": {
+                "firstName": {"type": "string"},
+                "lastName": {"type": "string"},
+                "age": {"type": "integer", "minimum": "16"},
+                "address": {"$ref": "address.json"},
+                "phoneNumber": {"type": "object"}
+            },
+            "required": ["firstName", "lastName"]
+        },
+        "licenseNumber": {"type": "string"}
+    },
+    "required": ["person"],
+    "additionalProperties": false
+}

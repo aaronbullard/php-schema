@@ -2,15 +2,12 @@
 
 namespace PhpSchema\Observers;
 
-use ArrayObject, StdClass;
+use Iterator;
+use PhpSchema\Traits\Loopable;
 use PhpSchema\Contracts\Observable;
+use PhpSchema\Traits\PublicProperties;
 
-class StdClassObserver extends Observer
+class StdClassObserver extends Observer implements Iterator
 {
-    public function __construct(StdClass $obj, Observable $subscriber)
-    {
-        $this->setFlags(ArrayObject::ARRAY_AS_PROPS);
-
-        parent::__construct($obj, $subscriber);
-    }
+    use PublicProperties, Loopable;
 }

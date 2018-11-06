@@ -1,21 +1,23 @@
 <?php
 
-namespace PhpSchema\Tests\Models;
+namespace PhpSchema\Tests\Traits;
 
 use PhpSchema\Tests\TestCase;
 use PhpSchema\Tests\Entity\Person;
 use PhpSchema\Tests\Entity\Address;
 use PhpSchema\ValidationException;
 
-class PublicAccessTest extends TestCase
+class PublicPropertiesTest extends TestCase
 {
     /** @test */
     public function it_sets_and_gets_public_properties()
     {
         $person = new Person("Aaron", "Bullard");
         $person->age = 42;
+        $person->changeFirstName('Bob');
 
         $this->assertEquals($person->age, 42);
+        $this->assertEquals($person->firstName, 'Bob');
     }
 
     /** @test */

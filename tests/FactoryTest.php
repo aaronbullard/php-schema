@@ -42,7 +42,7 @@ class FactoryTest extends TestCase
     public function it_validates_constructor_for_required_properties()
     {
         $this->expectException(ValidationException::class);
-
+        // Person requires firstName and lastName
         Factory::createDTO($this->schema, [
             'firstName' => "Aaron"
         ]);

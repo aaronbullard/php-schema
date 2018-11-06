@@ -12,7 +12,7 @@ trait MethodAccess
         if($this->isGetterMethod($method) && empty($args)){
             $key = $this->getMethodToAttributeTransformer($method);
             
-            return parent::offsetGet($key);
+            return $this->containerGet($key);
         } 
         
         if($this->isSetterMethod($method)) {
@@ -25,13 +25,7 @@ trait MethodAccess
 
             $key = $this->setMethodToAttributeTransformer($method);
 
-            $this->stopObserving($key);
-
-            parent::offsetSet($key, $args[0]);
-
-            $this->startObserving($key);
-
-            $this->notify();
+            $this->containerSet($key, $args[0]);
 
             return $this;
         }
