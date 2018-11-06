@@ -7,6 +7,7 @@
         "car_id": {"type": "integer"},
         "make": {"type": "string"},
         "licensPlate": {"type": "string"},
-        "driver": {"$ref": "person.json"}
+        "driver": {"$ref": "person.json"},
+        "color": {"type": "string"}
     }
 }

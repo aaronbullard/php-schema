@@ -13,7 +13,7 @@ trait MethodAccess
             $key = $this->getMethodToAttributeTransformer($method);
             
             return $this->containerGet($key);
-        } 
+        }
         
         if ($this->isSetterMethod($method)) {
             // No arguments passed to setter
@@ -35,12 +35,12 @@ trait MethodAccess
 
     protected function isGetterMethod(string $method): bool
     {
-        return true;
+        return $this->containerOffsetExists($method);
     }
 
     protected function isSetterMethod(string $method): bool
     {
-        return true;
+        return $this->containerOffsetExists($method);
     }
 
     protected function getMethodToAttributeTransformer(string $method): string

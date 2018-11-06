@@ -57,11 +57,11 @@ class PublicPropertiesTest extends TestCase
     /** @test */
     public function it_disallows_additional_properties()
     {
-        $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
+        $person = new Person("Aaron", "Bullard");
 
         $this->expectException(ValidationException::class);
 
-        $address->hemisphere = "northern";
+        $person->favoriteColor = "green, no blue!";
     }
 
 }
