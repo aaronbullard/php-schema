@@ -9,29 +9,29 @@ trait Loopable
 {
     protected $position = 0;
 
-    public function rewind() 
+    public function rewind()
     {
         $this->position = 0;
     }
 
-    public function current() 
+    public function current()
     {
         return $this->containerGet($this->key());
     }
 
-    public function key() 
+    public function key()
     {
         $keys = $this->containerKeys();
 
         return isset($keys[$this->position]) ? $keys[$this->position] : null;
     }
 
-    public function next() 
+    public function next()
     {
         ++$this->position;
     }
 
-    public function valid() 
+    public function valid()
     {
         return $this->containerOffsetExists($this->key());
     }

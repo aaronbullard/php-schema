@@ -38,7 +38,7 @@ abstract class SchemaModel extends Model
 
         $this->validator->validate($obj, $this->getSchema());
 
-        if($this->validator->isValid() === false) {
+        if ($this->validator->isValid() === false) {
             throw ValidationException::withErrors(
                 $this->validator->getErrors()
             );
