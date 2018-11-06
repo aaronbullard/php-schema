@@ -22,5 +22,5 @@ trait PublicProperties
     public function __unset($offset)
     {
         return $this->containerUnset($offset);
-    } 
+    }
 }

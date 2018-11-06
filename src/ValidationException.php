@@ -10,7 +10,7 @@ class ValidationException extends \InvalidArgumentException
 
     public static function withErrors(array $errors): ValidationException
     {
-        $properties = array_map(function($error) {
+        $properties = array_map(function ($error) {
             return $error['property'] == null ? 'unknown': $error['property'];
         }, $errors);
 

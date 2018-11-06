@@ -5,6 +5,7 @@ namespace PhpSchema\Tests\Models;
 use PhpSchema\Tests\TestCase;
 use PhpSchema\Factory;
 use PhpSchema\ValidationException;
+use PhpSchema\Contracts\Arrayable;
 use PhpSchema\Contracts\Observable;
 use PhpSchema\Tests\Entity\Person;
 use PhpSchema\Tests\Entity\Driver;
@@ -38,45 +39,49 @@ class SchemaModelTest extends TestCase
     }
 
     /** @test */
-    public function it_prevents_array_access()
-    {
-        $person = new Person("Aaron", "Bullard");
+    // public function it_prevents_array_access()
+    // {
+    //     $person = new Person("Aaron", "Bullard");
 
-        $this->expectException(\Throwable::class);
-        $person['firstName'];
-    }
-
-    /** @test */
-    public function it_is_not_iterable()
-    {
-        $person = new Person("Aaron", "Bullard");
-
-        $this->assertNotInstanceOf(\Traversable::class, $person);
-        $this->assertNotInstanceOf(\Iterator::class, $person);
-    }
+    //     $this->expectException(\Throwable::class);
+    //     $person['firstName'];
+    // }
 
     /** @test */
-    public function it_converts_to_an_array()
+    // public function it_is_not_iterable()
+    // {
+    //     $person = new Person("Aaron", "Bullard");
+
+    //     $this->assertNotInstanceOf(\Traversable::class, $person);
+    //     $this->assertNotInstanceOf(\Iterator::class, $person);
+    // }
+
+    /** @test */
+    public function it_implements_arrayable_interface()
     {
         $person = new Person("Aaron", "Bullard");
 
+        $this->assertInstanceOf(Arrayable::class, $person);
         $arr = $person->toArray();
-
         $this->assertEquals($arr['firstName'], "Aaron");
     }
 
     /** @test */
-    public function it_converts_to_a_stdClass()
+    public function it_implements_toJson()
     {
         $person = new Person("Aaron", "Bullard");
-        $address = new Address("123 Walker Rd", null, "Charleston", "SC", "29464");
-        $person->address = $address->toObject();
+        $person = $person->toJson();
 
-        $stdClass = $person->toObject();
+        $this->assertEquals('{"firstName":"Aaron","lastName":"Bullard"}', $person);
+    }
 
-        $this->assertInstanceOf(\StdClass::class, $stdClass);
-        $this->assertEquals($stdClass->firstName, "Aaron");
-        $this->assertEquals($stdClass->address->city, "Charleston");
+    /** @test */
+    public function it_implements_toObject()
+    {
+        $person = new Person("Aaron", "Bullard");
+        $person = $person->toObject();
+
+        $this->assertInstanceOf(\StdClass::class, $person);
     }
 
     /** @test */
@@ -139,36 +144,13 @@ class SchemaModelTest extends TestCase
     public function it_accepts_stdClasses()
     {
         $person = new Person("Aaron", "Bullard");
+
         $phoneNumber = new \StdClass;
         $phoneNumber->number = "843-867-5309";
-
         $person->phoneNumber = $phoneNumber;
 
         $p = $person->toArray();
-
         $this->assertEquals($p['phoneNumber']['number'], $phoneNumber->number);
-    }
-
-    /** @test */
-    public function it_enforces_arrayable_interface()
-    {
-        $person = new Person("Aaron", "Bullard");
-
-         // enforces schema
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage(
-            "Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface"
-        );
-
-        $number = new class('202-867-5309') {
-            public $number;
-
-            function __construct($num){
-                $this->number = $num;
-            }
-        };
-
-        $person->phoneNumber = $number;
     }
 
     /** @test */
@@ -180,6 +162,29 @@ class SchemaModelTest extends TestCase
         $contact->phoneNumbers[] = new PhoneNumber('202-867-5309');
         
         $this->assertEquals($contact->toArray()['phoneNumbers'][0]['number'], '202-867-5309');
+    }
+
+    /** @test */
+    public function it_throws_exception_to_objects_that_dont_use_arrayable_interface()
+    {
+        $person = new Person("Aaron", "Bullard");
+
+         // enforces schema
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage(
+            "Embeddable classes must implement the PhpSchema\Contracts\Arrayable interface"
+        );
+
+        // Create class instance that does not implement the Arrayable interface
+        $number = new class('202-867-5309') {
+            public $number;
+
+            function __construct($num){
+                $this->number = $num;
+            }
+        };
+
+        $person->phoneNumber = $number;
     }
 
     /** @test */
@@ -197,7 +202,7 @@ class SchemaModelTest extends TestCase
         $this->expectExceptionMessage(
             "There are errors in the following properties: phoneNumbers[2].number"
         );
-        $contact->phoneNumbers[] = new Person("Bob", "Smith");
+        $contact->phoneNumbers[] = new Person("Bob", "Smith"); // Not a phone number, person.json schema will reject
     }
 
     /** @test */
