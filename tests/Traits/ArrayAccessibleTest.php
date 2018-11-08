@@ -21,6 +21,15 @@ class Human extends Model implements ArrayAccess
     }
 }
 
+class Collection extends Model implements ArrayAccess
+{
+    use ArrayAccessible;
+
+    protected static $schema = [
+        "type" => "array"
+    ];
+}
+
 class ArrayAccessibleTest extends TestCase
 {
     /** @test */
@@ -42,6 +51,27 @@ class ArrayAccessibleTest extends TestCase
         unset($person['age']);
 
         $this->assertFalse(array_key_exists('age', $person->toArray()));
+    }
+
+    /** @test */
+    public function it_resets_array_keys_on_unsets()
+    {
+        $collection = new Collection();
+        $collection[0] = 0;
+        $collection[1] = 1;
+        $collection[2] = 2;
+
+        unset($collection[1]);
+        $this->assertTrue(array_key_exists(1, $collection->toArray())); // [0 => 0, 1 => 1];
+
+        $collection = new Collection();
+        $collection['first'] = 0;
+        $collection['second'] = 1;
+        $collection['third'] = 2;
+
+        unset($collection['second']);
+        $this->assertFalse(array_key_exists('second', $collection->toArray()));
+        $this->assertTrue(array_key_exists('third', $collection->toArray()));
     }
 
     /** @test */

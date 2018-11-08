@@ -39,24 +39,6 @@ class SchemaModelTest extends TestCase
     }
 
     /** @test */
-    // public function it_prevents_array_access()
-    // {
-    //     $person = new Person("Aaron", "Bullard");
-
-    //     $this->expectException(\Throwable::class);
-    //     $person['firstName'];
-    // }
-
-    /** @test */
-    // public function it_is_not_iterable()
-    // {
-    //     $person = new Person("Aaron", "Bullard");
-
-    //     $this->assertNotInstanceOf(\Traversable::class, $person);
-    //     $this->assertNotInstanceOf(\Iterator::class, $person);
-    // }
-
-    /** @test */
     public function it_implements_arrayable_interface()
     {
         $person = new Person("Aaron", "Bullard");

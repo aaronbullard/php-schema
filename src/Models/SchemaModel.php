@@ -11,7 +11,7 @@ abstract class SchemaModel extends Model
 
     protected $validator;
 
-    public function __construct($input)
+    public function __construct($input = [])
     {
         $this->validator = new Validator;
 
