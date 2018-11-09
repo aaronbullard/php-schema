@@ -13,7 +13,7 @@ abstract class SchemaModel extends Model
 
     public function __construct($input = [])
     {
-        $this->validator = new Validator;
+        $this->validator = Validator::create();
 
         parent::__construct($input);
 
