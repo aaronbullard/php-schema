@@ -15,6 +15,7 @@ class Car extends SchemaModel
 
     public function __construct($car_id, $make, $licensePlate)
     {
-        parent::__construct(compact('car_id', 'make', 'licensePlate'));
+        $color = null;
+        parent::__construct(compact('car_id', 'make', 'licensePlate', 'color'));
     }
 }

@@ -54,21 +54,25 @@ class ArrayAccessibleTest extends TestCase
     }
 
     /** @test */
-    public function it_resets_array_keys_on_unsets()
+    public function it_resets_array_keys_on_unset_for_non_associative_arrays()
     {
+        // Non Associative Array - reset Keys
         $collection = new Collection();
         $collection[0] = 0;
         $collection[1] = 1;
         $collection[2] = 2;
 
+        // Keys are reset
         unset($collection[1]);
         $this->assertTrue(array_key_exists(1, $collection->toArray())); // [0 => 0, 1 => 1];
 
+        // Associative Array
         $collection = new Collection();
         $collection['first'] = 0;
         $collection['second'] = 1;
         $collection['third'] = 2;
 
+        // Keys are NOT reset
         unset($collection['second']);
         $this->assertFalse(array_key_exists('second', $collection->toArray()));
         $this->assertTrue(array_key_exists('third', $collection->toArray()));

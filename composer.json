@@ -21,7 +21,8 @@
             "PhpSchema\\": "src"
         },
         "classmap": [
-            "tests"
+            "tests",
+            "demo"
         ],
         "files": ["tests/helpers.php"]
     },

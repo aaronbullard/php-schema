@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "properties": {
+        "firstName": {"type": "string"},
+        "lastName": {"type": "string"},
+        "age": {"type": "integer"},
+        "address": {"$ref": "address.json"},
+        "phoneNumber": {"type": "object"}
+    },
+    "required": ["firstName", "lastName"],
+    "additionalProperties": false
+}

@@ -8,6 +8,11 @@
         "make": {"type": "string"},
         "licensPlate": {"type": "string"},
         "driver": {"$ref": "person.json"},
-        "color": {"type": "string"}
+        "color": {
+            "oneOf": [
+                {"type": "string"},
+                {"type": "null"}
+            ]
+        }
     }
 }
