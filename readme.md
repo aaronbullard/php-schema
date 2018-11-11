@@ -40,7 +40,7 @@ Validation is built off of JsonSchema\Validator from justinrainbow/json-schema
 
 1) [PublicProperties](docs/public-properties.md) Trait
 2) [MethodAccess](docs/method-access.md) Trait
-3) Converting to [Array, Json, or StdClass](converter)
+3) Converting to [Array, Json, or StdClass](converter.md)
 4) [Integrating](docs/non-phpschema.md) with non-PhpSchema classes
 
 For more examples, see the tests: `tests\ModelTest.php`

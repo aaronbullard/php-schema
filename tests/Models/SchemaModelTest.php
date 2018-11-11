@@ -244,36 +244,4 @@ class SchemaModelTest extends TestCase
         $address->state = "South Carolina";
     }
 
-    public function xtest_speed_test()
-    {
-        $times = 10000;
-        $start = microtime(true);
-        $dto = 0;
-        $model = 0;
-
-        for($i=0; $i < $times; $i++){
-            $obj = (object) [
-                "firstName" => "Aaron",
-                "lastName" => "Bullard"
-            ];
-            $obj->firstName = 'a';
-            $obj->firstName = 'b';
-            unset($obj);
-        }
-        $dto = microtime(true);
-
-        for($i=0; $i < $times; $i++){
-            $obj = new Person("Aaron", "Bullard");
-            $obj->firstName = 'a';
-            $obj->firstName = 'b';
-            unset($obj);
-        }
-        $model = microtime(true);
-
-        $dtoDiff = $dto - $start;
-        $modelDiff = $model - $dto;
-
-        print_r(compact('dtoDiff', 'modelDiff'));die;
-    }
-
 }

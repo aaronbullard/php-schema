@@ -20,7 +20,7 @@ $invoice->addLineItem("Hotdog", 400)
 
 try {
     $invoice->addLineItem("Soda", 1.50);
-}catch (ValidationException $e){
+} catch (ValidationException $e){
     echo $e->getMessage() . PHP_EOL . PHP_EOL; // There are errors in the following properties: amount
 }
 
