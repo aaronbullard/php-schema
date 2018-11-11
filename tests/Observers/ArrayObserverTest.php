@@ -27,6 +27,7 @@ class ArrayObserverTest extends TestCase
         }
 
         unset($obs[1]); // 4
+        $this->assertCount(2, $obs);
     }
 
     /** @test */
@@ -39,6 +40,21 @@ class ArrayObserverTest extends TestCase
         $obs->push('hello world'); // 3
         
         $this->assertCount(3, $obs);
+    }
+
+    /** @test */
+    public function it_implements_unset_as_a_function()
+    {
+        $obs = new ArrayObserver([], $this->createModelMock(4));
+
+        $obs['one'] = true; // 1
+        $obs['two'] = true; // 2
+        $obs['three'] = true; // 3
+
+        $obs->unset('two'); // 4
+
+        $this->assertCount(2, $obs);
+        $this->assertFalse(isset($obs['two']));
     }
 
     /** @test */

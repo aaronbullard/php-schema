@@ -18,6 +18,13 @@ class ArrayObserver extends Observer implements ArrayAccess, Countable, Iterator
         return $this;
     }
 
+    public function unset($offset)
+    {
+        unset($this[$offset]);
+
+        return $this;
+    }
+
     public function count()
     {
         return count($this->container);
