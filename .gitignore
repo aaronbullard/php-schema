@@ -2,3 +2,4 @@
 /coverage
 /tests/summary.txt
 Dockerfile
+/tests/SpeedTest.php

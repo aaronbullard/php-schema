@@ -11,11 +11,11 @@ abstract class SchemaModel extends Model
 
     protected $validator;
 
-    public function __construct($input = [])
+    public function __construct($input = [], $observe = TRUE)
     {
         $this->validator = Validator::create();
 
-        parent::__construct($input);
+        parent::__construct($input, $observe);
 
         $this->notify();
     }

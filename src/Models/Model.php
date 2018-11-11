@@ -11,13 +11,34 @@ use PhpSchema\ValidationException;
 
 abstract class Model implements Arrayable, Observable
 {
+    /**
+     * Observe and validate child entities
+     *
+     * @var Boolean
+     */
+    protected $observe;
+
+    /**
+     * Array of all key/value attributes of the instance
+     *
+     * @var array
+     */
     protected $container = [];
 
+    /**
+     * Array of attributes that must be observed for changes.  These 
+     * entities implement the Observable interface.  When mutated, they notify
+     * all subscribers.
+     *
+     * @var array
+     */
     protected $subscribers = [];
 
 
-    public function __construct($input = [])
+    public function __construct($input = [], $observe = TRUE)
     {
+        $this->observe = $observe;
+
         foreach ($input as $offset => $value) {
             $this->stopObserving($offset);
             $this->container[$offset] = $value;
@@ -83,8 +104,18 @@ abstract class Model implements Arrayable, Observable
         return array_keys($this->container);
     }
 
+    protected function shouldObserve(): bool
+    {
+        return $this->observe;
+    }
+
     protected function startObserving($key): void
     {
+        // Should this instance observe child entities?
+        if ($this->shouldObserve() === false) {
+            return;
+        }
+
         $value = $this->containerGet($key);
         
         if (ObserverFactory::isObservable($value)) {
