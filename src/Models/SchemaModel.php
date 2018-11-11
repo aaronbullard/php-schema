@@ -2,7 +2,7 @@
 
 namespace PhpSchema\Models;
 
-use PhpSchema\Validator;
+use PhpSchema\Models\Validator;
 use PhpSchema\ValidationException;
 
 abstract class SchemaModel extends Model

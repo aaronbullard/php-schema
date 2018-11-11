@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSchema;
+namespace PhpSchema\Models;
 
 use JsonSchema\Validator as JsonSchemaValidator;
 

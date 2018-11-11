@@ -1,8 +1,8 @@
 <?php
 
-namespace PhpSchema;
+namespace PhpSchema\Models;
 
-use PhpSchema\Models\SchemaModel;
+// use PhpSchema\Models\SchemaModel;
 use PhpSchema\Traits\PublicProperties;
 
 class Factory

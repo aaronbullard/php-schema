@@ -1,10 +1,9 @@
 <?php
 
-namespace PhpSchema\Tests;
+namespace PhpSchema\Tests\Models;
 
-use PhpSchema\Factory;
-use PhpSchema\Validator;
-use PhpSchema\ValidationException;
+use PhpSchema\Tests\TestCase;
+use PhpSchema\Models\Validator;
 
 class ValidatorTest extends TestCase
 {
