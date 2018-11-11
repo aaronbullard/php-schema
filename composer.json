@@ -19,9 +19,12 @@
     "autoload": {
         "psr-4": {
             "PhpSchema\\": "src"
-        },
+        }
+    },
+    "autoload-dev": {
         "classmap": [
-            "tests"
+            "tests",
+            "demo"
         ],
         "files": ["tests/helpers.php"]
     },

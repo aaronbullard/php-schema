@@ -1,0 +1,19 @@
+{
+    "title": "invoice",
+    "type": "object",
+    "properties": {
+        "person": {"$ref": "person.json"},
+        "address": {"$ref": "address.json"},
+        "lineItems": {
+            "type": "array",
+            "items": {"$ref": "line_item.json"}
+        },
+        "taxRate": {"type": "number"},
+        "pay": {
+            "type": "integer",
+            "minimum": 0
+        }
+    },
+    "required": ["person", "address", "taxRate"],
+    "additionalProperties": false
+}

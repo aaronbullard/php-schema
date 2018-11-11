@@ -16,7 +16,7 @@ abstract class Model implements Arrayable, Observable
     protected $subscribers = [];
 
 
-    public function __construct($input)
+    public function __construct($input = [])
     {
         foreach ($input as $offset => $value) {
             $this->stopObserving($offset);
@@ -46,13 +46,36 @@ abstract class Model implements Arrayable, Observable
         $this->notify();
     }
 
+    protected function containerPush($value): void
+    {
+        $offset = count($this->container);
+        
+        $this->containerSet($offset, $value);
+    }
+
     protected function containerUnset($offset): void
     {
         $this->stopObserving($offset);
 
+        $isAssoc = false;
+        if($this->isAssociative()){
+            $isAssoc = true;
+        }
+
         unset($this->container[$offset]);
 
+        if($isAssoc === false){
+            $this->container = array_values($this->container);
+        }
+
         $this->notify();
+    }
+
+    protected function isAssociative()
+    {
+        if (array() === $this->container) return false;
+
+        return $this->containerKeys() !== range(0, count($this->container) - 1);
     }
 
     protected function containerKeys()

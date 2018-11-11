@@ -4,7 +4,6 @@ namespace PhpSchema\Tests\Traits;
 
 use PhpSchema\Tests\TestCase;
 use PhpSchema\Tests\Entity\Person;
-use PhpSchema\Tests\Entity\Address;
 use PhpSchema\ValidationException;
 
 class PublicPropertiesTest extends TestCase

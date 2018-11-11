@@ -2,7 +2,7 @@
 
 namespace PhpSchema\Models;
 
-use PhpSchema\Validator;
+use PhpSchema\Models\Validator;
 use PhpSchema\ValidationException;
 
 abstract class SchemaModel extends Model
@@ -11,9 +11,9 @@ abstract class SchemaModel extends Model
 
     protected $validator;
 
-    public function __construct($input)
+    public function __construct($input = [])
     {
-        $this->validator = new Validator;
+        $this->validator = Validator::create();
 
         parent::__construct($input);
 

@@ -1,0 +1,28 @@
+{
+    "title": "Address",
+    "type": "object",
+    "properties": {
+		"street_1": {
+			"type": "string"
+		},
+        "street_2": {
+            "oneOf": [
+                {"type": "string"},
+                {"type": "null"}
+            ]
+		},
+		"city": {
+			"type": "string"
+		},
+        "state": {
+			"type": "string",
+            "maxLength": 2
+		},
+		"zipcode": {
+            "type": "string",
+			"pattern": "^[0-9]{5}(?:-[0-9]{4})?$"
+		}
+	},
+	"required": ["street_1", "city", "state", "zipcode"],
+	"additionalProperties": false
+}

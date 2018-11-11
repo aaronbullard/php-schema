@@ -35,12 +35,12 @@ trait MethodAccess
 
     protected function isGetterMethod(string $method): bool
     {
-        return $this->containerOffsetExists($method);
+        return true;
     }
 
     protected function isSetterMethod(string $method): bool
     {
-        return $this->containerOffsetExists($method);
+        return true;
     }
 
     protected function getMethodToAttributeTransformer(string $method): string

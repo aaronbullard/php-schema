@@ -7,7 +7,7 @@ use PhpSchema\Contracts\Observable;
 
 abstract class Observer extends Model
 {
-    public function __construct($input, Observable $subscriber)
+    public function __construct($input = [], Observable $subscriber)
     {
         $this->addSubscriber($subscriber);
         parent::__construct($input);

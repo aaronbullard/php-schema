@@ -27,6 +27,50 @@ class ArrayObserverTest extends TestCase
         }
 
         unset($obs[1]); // 4
+        $this->assertCount(2, $obs);
+    }
+
+    /** @test */
+    public function it_implements_push()
+    {
+        $obs = new ArrayObserver([], $this->createModelMock(3));
+
+        $obs->push('hello world'); // 1
+        $obs->push('hello world'); // 2
+        $obs->push('hello world'); // 3
+        
+        $this->assertCount(3, $obs);
+    }
+
+    /** @test */
+    public function it_implements_unset_as_a_function()
+    {
+        $obs = new ArrayObserver([], $this->createModelMock(4));
+
+        $obs['one'] = true; // 1
+        $obs['two'] = true; // 2
+        $obs['three'] = true; // 3
+
+        $obs->unset('two'); // 4
+
+        $this->assertCount(2, $obs);
+        $this->assertFalse(isset($obs['two']));
+    }
+
+    /** @test */
+    public function it_implements_filter()
+    {
+        $obs = new ArrayObserver([], $this->createModelMock(3));
+
+        $obs->push('one'); // 1
+        $obs->push('two'); // 2
+        $obs->push('three'); // 3
+
+        $filtered = $obs->filter(function ($item) {
+            return $item != 'two';
+        });
+
+        $this->assertCount(2, $filtered);
     }
 
     /** @test */
@@ -48,19 +92,19 @@ class ArrayObserverTest extends TestCase
         $numOfValidations = 5;
         $obs = new ArrayObserver([], $this->createModelMock($numOfValidations));
 
-        $obs[] = new StdClass; // 1
-        $obs[] = new StdClass; // 2
+        $obs['aaron'] = new StdClass; // 1
+        $obs['bob'] = new StdClass; // 2
 
-        $aaron = $obs[0];
+        $aaron = $obs['aaron'];
         $aaron->name = "Aaron"; // 3
 
         // unset by offset
-        unset($obs[0]); // 4
+        unset($obs['aaron']); // 4
         $aaron->name = "A-A-ron"; // nothing happens
 
         // unset by replace
-        $bob = $obs[1];
-        $obs[1] = new StdClass; // 5
+        $bob = $obs['bob'];
+        $obs['bob'] = new StdClass; // 5
         $bob->name = "Bob"; // nothing happens
 
         $this->assertCount(1, $obs);

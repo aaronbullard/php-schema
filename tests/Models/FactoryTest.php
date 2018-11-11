@@ -1,8 +1,9 @@
 <?php
 
-namespace PhpSchema\Tests;
+namespace PhpSchema\Tests\Models;
 
-use PhpSchema\Factory;
+use PhpSchema\Tests\TestCase;
+use PhpSchema\Models\Factory;
 use PhpSchema\ValidationException;
 
 class FactoryTest extends TestCase
@@ -14,7 +15,7 @@ class FactoryTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->schema = ['$ref' => 'file://' . __DIR__ . '/Schemas/person.json'];
+        $this->schema = ['$ref' => 'file://' . __DIR__ . '/../Schemas/person.json'];
         $this->person = Factory::createDTO($this->schema, [
             'firstName' => "Aaron",
             'lastName' => "Bullard"

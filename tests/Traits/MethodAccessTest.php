@@ -22,7 +22,6 @@ class MethodAccessTest extends TestCase
     /** @test */
     public function it_gets_unset_properties()
     {
-        $this->markTestSkipped();
         $car = new Car(42, "Jeep", "ABC123");
         $this->assertEquals($car->color(), null);
     }
